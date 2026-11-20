@@ -12617,7 +12617,7 @@ iwx_rs_update(struct iwx_softc *sc, struct iwx_tlc_update_notif *notif)
     uint32_t flags = le32toh(notif->flags);
     /* Only the main station's rate notifications are consumed (the MLD
      * per-link mapping left with the BE device support). */
-    ni = notif->sta_id == IWX_STATION_ID ? ic->ic_bss : NULL;
+    ni = notif->sta_id == IWX_STATION_ID ? sc->sc_ic.ic_bss : NULL;
     if (ni == NULL)
         return;
     struct iwx_node *in = (struct iwx_node *)ni;
@@ -15509,19 +15509,9 @@ iwx_rx_pkt(struct iwx_softc *sc, struct iwx_rx_data *data, struct mbuf_list *ml)
         
         if (!iwx_rx_pkt_valid(pkt))
             break;
-#ifdef AIRPORT_WCL
-        if (!(qid & 0x80) && qid == IWX_DQA_CMD_QUEUE &&
-            idx < sc->txq[qid].ring_count &&
-            (sc->txq[qid].data[idx].flags & IWX_TXDATA_FLAG_CMD_PENDING)) {
-            uint32_t context_code = IWX_WIDE_ID(pkt->hdr.group_id & ~IWX_CMD_FAILED_MSK, pkt->hdr.cmd);
-            if (context_code == IWX_WIDE_ID(IWX_MAC_CONF_GROUP, IWX_MLD_MAC_CONFIG_CMD) ||
-                context_code == IWX_WIDE_ID(IWX_MAC_CONF_GROUP, IWX_MLD_LINK_CONFIG_CMD) ||
-                context_code == IWX_WIDE_ID(IWX_MAC_CONF_GROUP, IWX_MLD_STA_CONFIG_CMD))
-                iwx_record_diagnostic(sc, "context-response", __FUNCTION__, __LINE__,
-                    (pkt->hdr.group_id & IWX_CMD_FAILED_MSK) ? EIO : 0,
-                    context_code, -1, -1, pkt);
-        }
-#endif
+        /* The MLD context-response diagnostics (MAC/LINK/STA_CONFIG
+         * failure recording on pending-command completions) left with
+         * the BE device support; the AX211 never sends those commands. */
         
         /*
          * XXX Intel inside (tm)
