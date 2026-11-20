@@ -82,27 +82,17 @@
 		F8D94CC12B9ABFE20081A3C4 /* hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07CA23FCBC6C009FBA6C /* hmac.c */; };
 		F8D94CC22B9ABFE20081A3C4 /* sha2.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07CB23FCBC6C009FBA6C /* sha2.c */; };
 		F8D94CC32B9ABFE20081A3C4 /* rijndael.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07CC23FCBC6C009FBA6C /* rijndael.c */; };
-		F8D94CC42B9ABFE20081A3C4 /* ecb3_enc.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07CD23FCBC6C009FBA6C /* ecb3_enc.c */; };
-		F8D94CC52B9ABFE20081A3C4 /* set_key.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07CE23FCBC6C009FBA6C /* set_key.c */; };
-		F8D94CC62B9ABFE20081A3C4 /* cast.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07CF23FCBC6C009FBA6C /* cast.c */; };
 		F8D94CC72B9ABFE20081A3C4 /* michael.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07D123FCBC6C009FBA6C /* michael.c */; };
 		F8D94CC82B9ABFE20081A3C4 /* arp.c in Sources */ = {isa = PBXBuildFile; fileRef = A5A0C5232A501E6800EF9328 /* arp.c */; };
 		F8D94CC92B9ABFE20081A3C4 /* sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07D823FCBC6C009FBA6C /* sha1.c */; };
 		F8D94CCA2B9ABFE20081A3C4 /* cmac.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07DD23FCBC6C009FBA6C /* cmac.c */; };
-		F8D94CCB2B9ABFE20081A3C4 /* ecb_enc.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07E423FCBC6C009FBA6C /* ecb_enc.c */; };
-		F8D94CCC2B9ABFE20081A3C4 /* chachapoly.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07E923FCBC6C009FBA6C /* chachapoly.c */; };
 		F8D94CCD2B9ABFE20081A3C4 /* AirportItlwmV2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8A028202A4A7DDC00C6DE90 /* AirportItlwmV2.cpp */; };
 		F8D94CCF2B9ABFE20081A3C4 /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07EA23FCBC6C009FBA6C /* md5.c */; };
 		F8D94CD02B9ABFE20081A3C4 /* arc4.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07EB23FCBC6C009FBA6C /* arc4.c */; };
 		F8D94CD12B9ABFE20081A3C4 /* AirportItlwmEthernetInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8A0282D2A4A7E0400C6DE90 /* AirportItlwmEthernetInterface.cpp */; };
 		F8D94CD22B9ABFE20081A3C4 /* AirportItlwmSkywalkInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8A028702A4A7FE100C6DE90 /* AirportItlwmSkywalkInterface.cpp */; };
-		F8D94CD32B9ABFE20081A3C4 /* blf.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07EC23FCBC6C009FBA6C /* blf.c */; };
 		F8D94CD42B9ABFE20081A3C4 /* _ifq.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A5FA2AE328A797B200847103 /* _ifq.cpp */; };
-		F8D94CD52B9ABFE20081A3C4 /* poly1305.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07ED23FCBC6C009FBA6C /* poly1305.c */; };
 		F8D94CD62B9ABFE20081A3C4 /* key_wrap.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07F023FCBC6C009FBA6C /* key_wrap.c */; };
-		F8D94CD72B9ABFE20081A3C4 /* gmac.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07F223FCBC6C009FBA6C /* gmac.c */; };
-		F8D94CD82B9ABFE20081A3C4 /* rmd160.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07F323FCBC6C009FBA6C /* rmd160.c */; };
-		F8D94CD92B9ABFE20081A3C4 /* idgen.c in Sources */ = {isa = PBXBuildFile; fileRef = 024A07F423FCBC6C009FBA6C /* idgen.c */; };
 		F8D94CDA2B9ABFE20081A3C4 /* compat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 024A07BA23FCBC6C009FBA6C /* compat.cpp */; };
 		F8D94CDB2B9ABFE20081A3C4 /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = F8FA0EED2501E8C100B1822E /* zutil.c */; };
 		F8D94CDC2B9ABFE20081A3C4 /* ItlHalService.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8D364F624F93AFD0029340B /* ItlHalService.cpp */; };
@@ -135,46 +125,23 @@
 		024A07CA23FCBC6C009FBA6C /* hmac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = hmac.c; sourceTree = "<group>"; };
 		024A07CB23FCBC6C009FBA6C /* sha2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha2.c; sourceTree = "<group>"; };
 		024A07CC23FCBC6C009FBA6C /* rijndael.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rijndael.c; sourceTree = "<group>"; };
-		024A07CD23FCBC6C009FBA6C /* ecb3_enc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ecb3_enc.c; sourceTree = "<group>"; };
-		024A07CE23FCBC6C009FBA6C /* set_key.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = set_key.c; sourceTree = "<group>"; };
-		024A07CF23FCBC6C009FBA6C /* cast.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cast.c; sourceTree = "<group>"; };
-		024A07D023FCBC6C009FBA6C /* des_locl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = des_locl.h; sourceTree = "<group>"; };
 		024A07D123FCBC6C009FBA6C /* michael.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = michael.c; sourceTree = "<group>"; };
 		024A07D223FCBC6C009FBA6C /* key_wrap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = key_wrap.h; sourceTree = "<group>"; };
-		024A07D323FCBC6C009FBA6C /* poly1305.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = poly1305.h; sourceTree = "<group>"; };
 		024A07D423FCBC6C009FBA6C /* md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
-		024A07D523FCBC6C009FBA6C /* blf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = blf.h; sourceTree = "<group>"; };
 		024A07D623FCBC6C009FBA6C /* arc4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = arc4.h; sourceTree = "<group>"; };
-		024A07D723FCBC6C009FBA6C /* chachapoly.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chachapoly.h; sourceTree = "<group>"; };
 		024A07D823FCBC6C009FBA6C /* sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha1.c; sourceTree = "<group>"; };
-		024A07D923FCBC6C009FBA6C /* sk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sk.h; sourceTree = "<group>"; };
-		024A07DA23FCBC6C009FBA6C /* castsb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = castsb.h; sourceTree = "<group>"; };
-		024A07DB23FCBC6C009FBA6C /* rmd160.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rmd160.h; sourceTree = "<group>"; };
-		024A07DC23FCBC6C009FBA6C /* idgen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = idgen.h; sourceTree = "<group>"; };
 		024A07DD23FCBC6C009FBA6C /* cmac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = cmac.c; sourceTree = "<group>"; };
-		024A07DE23FCBC6C009FBA6C /* gmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gmac.h; sourceTree = "<group>"; };
 		024A07DF23FCBC6C009FBA6C /* sha2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha2.h; sourceTree = "<group>"; };
 		024A07E023FCBC6C009FBA6C /* hmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = hmac.h; sourceTree = "<group>"; };
 		024A07E123FCBC6C009FBA6C /* aes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = aes.h; sourceTree = "<group>"; };
-		024A07E223FCBC6C009FBA6C /* cast.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cast.h; sourceTree = "<group>"; };
 		024A07E323FCBC6C009FBA6C /* michael.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = michael.h; sourceTree = "<group>"; };
-		024A07E423FCBC6C009FBA6C /* ecb_enc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ecb_enc.c; sourceTree = "<group>"; };
 		024A07E523FCBC6C009FBA6C /* cryptodev.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cryptodev.h; sourceTree = "<group>"; };
 		024A07E623FCBC6C009FBA6C /* rijndael.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rijndael.h; sourceTree = "<group>"; };
-		024A07E723FCBC6C009FBA6C /* chacha_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = chacha_private.h; sourceTree = "<group>"; };
 		024A07E823FCBC6C009FBA6C /* sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha1.h; sourceTree = "<group>"; };
-		024A07E923FCBC6C009FBA6C /* chachapoly.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = chachapoly.c; sourceTree = "<group>"; };
 		024A07EA23FCBC6C009FBA6C /* md5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = md5.c; sourceTree = "<group>"; };
 		024A07EB23FCBC6C009FBA6C /* arc4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = arc4.c; sourceTree = "<group>"; };
-		024A07EC23FCBC6C009FBA6C /* blf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = blf.c; sourceTree = "<group>"; };
-		024A07ED23FCBC6C009FBA6C /* poly1305.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = poly1305.c; sourceTree = "<group>"; };
-		024A07EE23FCBC6C009FBA6C /* spr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spr.h; sourceTree = "<group>"; };
-		024A07EF23FCBC6C009FBA6C /* podd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = podd.h; sourceTree = "<group>"; };
 		024A07F023FCBC6C009FBA6C /* key_wrap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = key_wrap.c; sourceTree = "<group>"; };
 		024A07F123FCBC6C009FBA6C /* cmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmac.h; sourceTree = "<group>"; };
-		024A07F223FCBC6C009FBA6C /* gmac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gmac.c; sourceTree = "<group>"; };
-		024A07F323FCBC6C009FBA6C /* rmd160.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rmd160.c; sourceTree = "<group>"; };
-		024A07F423FCBC6C009FBA6C /* idgen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = idgen.c; sourceTree = "<group>"; };
 		024A082123FCBC6C009FBA6C /* compat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = compat.h; sourceTree = "<group>"; };
 		5076FA7F24CC71E40011B2BB /* FwBinary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FwBinary.cpp; sourceTree = "<group>"; };
 		5088ECB8252883BF0068A63D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -395,46 +362,23 @@
 				024A07CA23FCBC6C009FBA6C /* hmac.c */,
 				024A07CB23FCBC6C009FBA6C /* sha2.c */,
 				024A07CC23FCBC6C009FBA6C /* rijndael.c */,
-				024A07CD23FCBC6C009FBA6C /* ecb3_enc.c */,
-				024A07CE23FCBC6C009FBA6C /* set_key.c */,
-				024A07CF23FCBC6C009FBA6C /* cast.c */,
-				024A07D023FCBC6C009FBA6C /* des_locl.h */,
 				024A07D123FCBC6C009FBA6C /* michael.c */,
 				024A07D223FCBC6C009FBA6C /* key_wrap.h */,
-				024A07D323FCBC6C009FBA6C /* poly1305.h */,
 				024A07D423FCBC6C009FBA6C /* md5.h */,
-				024A07D523FCBC6C009FBA6C /* blf.h */,
 				024A07D623FCBC6C009FBA6C /* arc4.h */,
-				024A07D723FCBC6C009FBA6C /* chachapoly.h */,
 				024A07D823FCBC6C009FBA6C /* sha1.c */,
-				024A07D923FCBC6C009FBA6C /* sk.h */,
-				024A07DA23FCBC6C009FBA6C /* castsb.h */,
-				024A07DB23FCBC6C009FBA6C /* rmd160.h */,
-				024A07DC23FCBC6C009FBA6C /* idgen.h */,
 				024A07DD23FCBC6C009FBA6C /* cmac.c */,
-				024A07DE23FCBC6C009FBA6C /* gmac.h */,
 				024A07DF23FCBC6C009FBA6C /* sha2.h */,
 				024A07E023FCBC6C009FBA6C /* hmac.h */,
 				024A07E123FCBC6C009FBA6C /* aes.h */,
-				024A07E223FCBC6C009FBA6C /* cast.h */,
 				024A07E323FCBC6C009FBA6C /* michael.h */,
-				024A07E423FCBC6C009FBA6C /* ecb_enc.c */,
 				024A07E523FCBC6C009FBA6C /* cryptodev.h */,
 				024A07E623FCBC6C009FBA6C /* rijndael.h */,
-				024A07E723FCBC6C009FBA6C /* chacha_private.h */,
 				024A07E823FCBC6C009FBA6C /* sha1.h */,
-				024A07E923FCBC6C009FBA6C /* chachapoly.c */,
 				024A07EA23FCBC6C009FBA6C /* md5.c */,
 				024A07EB23FCBC6C009FBA6C /* arc4.c */,
-				024A07EC23FCBC6C009FBA6C /* blf.c */,
-				024A07ED23FCBC6C009FBA6C /* poly1305.c */,
-				024A07EE23FCBC6C009FBA6C /* spr.h */,
-				024A07EF23FCBC6C009FBA6C /* podd.h */,
 				024A07F023FCBC6C009FBA6C /* key_wrap.c */,
 				024A07F123FCBC6C009FBA6C /* cmac.h */,
-				024A07F223FCBC6C009FBA6C /* gmac.c */,
-				024A07F323FCBC6C009FBA6C /* rmd160.c */,
-				024A07F423FCBC6C009FBA6C /* idgen.c */,
 			);
 			path = crypto;
 			sourceTree = "<group>";
@@ -889,28 +833,18 @@
 				F8D94CC12B9ABFE20081A3C4 /* hmac.c in Sources */,
 				F8D94CC22B9ABFE20081A3C4 /* sha2.c in Sources */,
 				F8D94CC32B9ABFE20081A3C4 /* rijndael.c in Sources */,
-				F8D94CC42B9ABFE20081A3C4 /* ecb3_enc.c in Sources */,
-				F8D94CC52B9ABFE20081A3C4 /* set_key.c in Sources */,
-				F8D94CC62B9ABFE20081A3C4 /* cast.c in Sources */,
 				F8D94CC72B9ABFE20081A3C4 /* michael.c in Sources */,
 				F8D94CC82B9ABFE20081A3C4 /* arp.c in Sources */,
 				F8D94CC92B9ABFE20081A3C4 /* sha1.c in Sources */,
 				F8D94CCA2B9ABFE20081A3C4 /* cmac.c in Sources */,
-				F8D94CCB2B9ABFE20081A3C4 /* ecb_enc.c in Sources */,
-				F8D94CCC2B9ABFE20081A3C4 /* chachapoly.c in Sources */,
 				F8D94CCD2B9ABFE20081A3C4 /* AirportItlwmV2.cpp in Sources */,
 				F8D94CCF2B9ABFE20081A3C4 /* md5.c in Sources */,
 				F8D94CD02B9ABFE20081A3C4 /* arc4.c in Sources */,
 				F8D94CD12B9ABFE20081A3C4 /* AirportItlwmEthernetInterface.cpp in Sources */,
 				F8D94CD22B9ABFE20081A3C4 /* AirportItlwmSkywalkInterface.cpp in Sources */,
 				A112F5371BD949CD8CA19D88 /* WCL.cpp in Sources */,
-				F8D94CD32B9ABFE20081A3C4 /* blf.c in Sources */,
 				F8D94CD42B9ABFE20081A3C4 /* _ifq.cpp in Sources */,
-				F8D94CD52B9ABFE20081A3C4 /* poly1305.c in Sources */,
 				F8D94CD62B9ABFE20081A3C4 /* key_wrap.c in Sources */,
-				F8D94CD72B9ABFE20081A3C4 /* gmac.c in Sources */,
-				F8D94CD82B9ABFE20081A3C4 /* rmd160.c in Sources */,
-				F8D94CD92B9ABFE20081A3C4 /* idgen.c in Sources */,
 				F8D94CDA2B9ABFE20081A3C4 /* compat.cpp in Sources */,
 				F8D94CDB2B9ABFE20081A3C4 /* zutil.c in Sources */,
 				F8D94CDC2B9ABFE20081A3C4 /* ItlHalService.cpp in Sources */,
@@ -957,28 +891,18 @@
 				F8D94CC12B9ABFE20081A3C4 /* hmac.c in Sources */,
 				F8D94CC22B9ABFE20081A3C4 /* sha2.c in Sources */,
 				F8D94CC32B9ABFE20081A3C4 /* rijndael.c in Sources */,
-				F8D94CC42B9ABFE20081A3C4 /* ecb3_enc.c in Sources */,
-				F8D94CC52B9ABFE20081A3C4 /* set_key.c in Sources */,
-				F8D94CC62B9ABFE20081A3C4 /* cast.c in Sources */,
 				F8D94CC72B9ABFE20081A3C4 /* michael.c in Sources */,
 				F8D94CC82B9ABFE20081A3C4 /* arp.c in Sources */,
 				F8D94CC92B9ABFE20081A3C4 /* sha1.c in Sources */,
 				F8D94CCA2B9ABFE20081A3C4 /* cmac.c in Sources */,
-				F8D94CCB2B9ABFE20081A3C4 /* ecb_enc.c in Sources */,
-				F8D94CCC2B9ABFE20081A3C4 /* chachapoly.c in Sources */,
 				F8D94CCD2B9ABFE20081A3C4 /* AirportItlwmV2.cpp in Sources */,
 				F8D94CCF2B9ABFE20081A3C4 /* md5.c in Sources */,
 				F8D94CD02B9ABFE20081A3C4 /* arc4.c in Sources */,
 				F8D94CD12B9ABFE20081A3C4 /* AirportItlwmEthernetInterface.cpp in Sources */,
 				F8D94CD22B9ABFE20081A3C4 /* AirportItlwmSkywalkInterface.cpp in Sources */,
 				A112F5371BD949CD8CA19D88 /* WCL.cpp in Sources */,
-				F8D94CD32B9ABFE20081A3C4 /* blf.c in Sources */,
 				F8D94CD42B9ABFE20081A3C4 /* _ifq.cpp in Sources */,
-				F8D94CD52B9ABFE20081A3C4 /* poly1305.c in Sources */,
 				F8D94CD62B9ABFE20081A3C4 /* key_wrap.c in Sources */,
-				F8D94CD72B9ABFE20081A3C4 /* gmac.c in Sources */,
-				F8D94CD82B9ABFE20081A3C4 /* rmd160.c in Sources */,
-				F8D94CD92B9ABFE20081A3C4 /* idgen.c in Sources */,
 				F8D94CDA2B9ABFE20081A3C4 /* compat.cpp in Sources */,
 				F8D94CDB2B9ABFE20081A3C4 /* zutil.c in Sources */,
 				F8D94CDC2B9ABFE20081A3C4 /* ItlHalService.cpp in Sources */,
