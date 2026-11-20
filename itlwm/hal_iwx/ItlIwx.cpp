@@ -671,7 +671,7 @@ static const char *iwx_rs_pretty_ant(u8 ant)
         [IWX_ANT_AB]   = "AB",
     };
 
-    if (ant > ARRAY_SIZE(ant_name))
+    if (ant >= ARRAY_SIZE(ant_name))
         return "UNKNOWN";
 
     return ant_name[ant];
@@ -687,7 +687,7 @@ static const char *iwx_rs_pretty_bw(u8 bw)
         "320Mhz",
     };
 
-    if (bw > ARRAY_SIZE(pretty_bw))
+    if (bw >= ARRAY_SIZE(pretty_bw))
         return "UNKNOWN";
 
     return pretty_bw[bw];
@@ -1406,8 +1406,14 @@ iwx_ctxt_info_gen3_init(struct iwx_softc *sc, const struct iwx_fw_sects *fws)
     
     iwx_set_ltr(sc);
     
-    if (!iwx_nic_lock(sc))
-        return EBUSY;
+    if (!iwx_nic_lock(sc)) {
+        /* Release the context-info DMAs allocated above; returning here
+         * without cleanup leaked the IML, firmware image, prph_info and
+         * prph_scratch buffers on every failed init attempt (and the init
+         * retry loop compounds the leak). */
+        err = EBUSY;
+        goto fail1;
+    }
     /* Pre-BZ boot kick; the BZ FUNC_SCRATCH/ROM_START variant was removed
      * with the BE device support. */
     iwx_write_umac_prph(sc, IWX_UREG_CPU_INIT_RUN, 1);
@@ -2257,6 +2263,7 @@ int ItlIwx::
 iwx_read_pnvm(struct iwx_softc *sc)
 {
     int err = 0;
+    int loaded = 0;
     OSData *fwData = NULL;
     struct iwx_fw_info *fw = &sc->sc_fw;
     char fwname_copy[64];
@@ -2270,10 +2277,14 @@ iwx_read_pnvm(struct iwx_softc *sc)
         iwx_pnvm_free(fw);
     strlcpy(fwname_copy, sc->sc_fwname, sizeof(fwname_copy));
     find = strrchr(sc->sc_fwname, '-');
-    if (!find)
+    if (!find || find - sc->sc_fwname - 1 <= 0) {
+        /* Nothing can be loaded without a derivable PNVM name. Return
+         * ENOENT (not 0) so the caller can distinguish "nothing loaded"
+         * from "loaded" - a 0-with-nothing-loaded return made the old
+         * caller ring the doorbell and block for the full 2 s timeout. */
+        err = ENOENT;
         goto out;
-    if (find - sc->sc_fwname - 1 <= 0)
-        goto out;
+    }
     fwname_copy[find - sc->sc_fwname] = '\0';
     
     snprintf(pnvm_name, sizeof(pnvm_name), "%s.pnvm", fwname_copy);
@@ -2288,7 +2299,13 @@ iwx_read_pnvm(struct iwx_softc *sc)
     }
     fw->pnvm_rawsize = fwData->getLength() * 20;
     fw->pnvm_rawdata = malloc(fw->pnvm_rawsize, 1, 1);
-    uncompressFirmware((u_char *)fw->pnvm_rawdata, (uint *)&fw->pnvm_rawsize, (u_char *)fwData->getBytesNoCopy(), fwData->getLength());
+    if (!uncompressFirmware((u_char *)fw->pnvm_rawdata, (uint *)&fw->pnvm_rawsize, (u_char *)fwData->getBytesNoCopy(), fwData->getLength())) {
+        /* Inflate failure previously went unnoticed and the TLV walk ran
+         * over uninitialized memory. */
+        err = EINVAL;
+        XYLogE("%s inflate fail.\n", pnvm_name);
+        goto out;
+    }
     XYLogE("load firmware %s done %zu\n", pnvm_name, fw->pnvm_rawsize);
     
     XYLog("Parsing PNVM file\n");
@@ -2331,8 +2348,10 @@ iwx_read_pnvm(struct iwx_softc *sc)
                 sc->sku_id[2] == le32toh(sku_id->data[2])) {
 
                 err = iwx_pnvm_handle_section(sc, data, len);
-                if (!err)
+                if (!err) {
+                    loaded = 1;
                     goto out;
+                }
             } else {
                 XYLog("SKU ID didn't match!\n");
             }
@@ -2343,6 +2362,14 @@ iwx_read_pnvm(struct iwx_softc *sc)
     }
     
     XYLog("PNVM parse done\n");
+
+    if (!loaded && err == 0) {
+        /* Walked the whole PNVM without a SKU match (or without any
+         * section): nothing was loaded. Tell the caller with ENOENT so it
+         * can skip the doorbell/wait; distinguishable from hard parse or
+         * allocation errors, which keep their errno. */
+        err = ENOENT;
+    }
 
 out:
     OSSafeReleaseNULL(fwData);
@@ -2363,6 +2390,17 @@ iwx_load_pnvm(struct iwx_softc *sc)
         return 0;
     
     err = iwx_read_pnvm(sc);
+    if (err == ENOENT) {
+        /* No PNVM section is available for this SKU: nothing was loaded,
+         * so there is nothing to signal to the firmware. Do not ring the
+         * doorbell and do not wait for PNVM_INIT_COMPLETE_NTFY (the
+         * firmware cannot send it; the previous code blocked the command
+         * gate for the full 2 s timeout on every init attempt and then
+         * propagated a spurious failure into the init retry loop).
+         * Continue with the firmware's built-in defaults instead. */
+        iwx_pnvm_free(&sc->sc_fw);
+        return 0;
+    }
     if (err)
         return err;
     sc->sc_init_complete &= ~IWX_PNVM_COMPLETE;
@@ -2376,13 +2414,21 @@ iwx_load_pnvm(struct iwx_softc *sc)
         return EBUSY;
     
     err = iwx_wait_notification(sc, &sc->sc_init_complete, IWX_PNVM_COMPLETE, 2000);
-    if (err == ENXIO)
+    if (err == ENXIO) {
+        iwx_pnvm_free(&sc->sc_fw);
         return err;
+    }
     
     iwx_pnvm_free(&sc->sc_fw);
-    // Match the reference wait contract and keep the firmware status diagnostic.
+    /* Record the notification payload length as a diagnostic. It is NOT
+     * used as a success criterion: the BE firmware reports a 4-byte
+     * payload, but the AX211 (API 68) notification carries the full
+     * iwl_pnvm_init_complete_ntfy structure - failing on a mismatch (as
+     * the previous code did) would spuriously kill every PNVM load on
+     * this hardware. The wait result above is the verdict. */
     if (!err && sc->sc_pnvm_payload_len != sizeof(uint32_t))
-        return EINVAL;
+        XYLog("%s: PNVM notification payload length %u (BE reports 4)\n",
+              __FUNCTION__, sc->sc_pnvm_payload_len);
     
     return err;
 }
@@ -6134,8 +6180,10 @@ static void
 iwx_trace_hotspot_rx(struct iwx_softc *sc, struct iwx_rx_mpdu_desc *desc,
     size_t desc_size, size_t packet_len)
 {
-    if (!sc->sc_pcitag->getProperty("AirportItlwm-HotspotScanRequest"))
-        return;
+    /* Cheap stack-data filters run BEFORE the registry lookup: the
+     * getProperty() below used to execute for every received MPDU even
+     * with hotspot tracing off (the enabling property is only ever set
+     * externally, via ioreg, by the diagnostics workflow). */
     const uint8_t channel = sc->sc_device_family >= IWX_DEVICE_FAMILY_AX210 ?
         desc->v3.channel : desc->v1.channel;
     if (isset(sc->sc_ucode_api, IWX_UCODE_TLV_API_BAND_IN_RX_DATA) &&
@@ -6153,6 +6201,8 @@ iwx_trace_hotspot_rx(struct iwx_softc *sc, struct iwx_rx_mpdu_desc *desc,
          subtype != IEEE80211_FC0_SUBTYPE_PROBE_RESP &&
          subtype != IEEE80211_FC0_SUBTYPE_DISASSOC &&
          subtype != IEEE80211_FC0_SUBTYPE_DEAUTH))
+        return;
+    if (!sc->sc_pcitag->getProperty("AirportItlwm-HotspotScanRequest"))
         return;
     auto records = OSDynamicCast(OSDictionary,
         sc->sc_pcitag->getProperty("AirportItlwm-HotspotRx149"));
@@ -7691,7 +7741,6 @@ iwx_tx_fill_cmd(struct iwx_softc *sc, struct iwx_node *in,
         }
     } else if (IWX_RIDX_IS_CCK(ridx))
         rate_flags |= IWX_RATE_MCS_CCK_MSK_V1;
-    XYLog("%s hwrate: %d ridx: %d rate: %d minrate: %d\n", __FUNCTION__, hwrate, ridx, iwx_ridx2rate(rs, ridx) & IEEE80211_RATE_VAL, ieee80211_min_basic_rate(ic));
     *rate_n_flags = htole32(rate_flags | hwrate);
     
     return rinfo;

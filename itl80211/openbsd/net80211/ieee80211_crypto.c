@@ -90,24 +90,24 @@ void
 ieee80211_crypto_detach(struct _ifnet *ifp)
 {
     XYLog("%s\n", __FUNCTION__);
-	struct ieee80211com *ic = (struct ieee80211com *)ifp;
-	struct ieee80211_pmk *pmk;
+        struct ieee80211com *ic = (struct ieee80211com *)ifp;
+        struct ieee80211_pmk *pmk;
 
-	/* purge the PMKSA cache */
-	while ((pmk = TAILQ_FIRST(&ic->ic_pmksa)) != NULL) {
-		TAILQ_REMOVE(&ic->ic_pmksa, pmk, pmk_next);
-		explicit_bzero(pmk, sizeof(*pmk));
-		free(pmk);
-	}
+        /* purge the PMKSA cache */
+        while ((pmk = TAILQ_FIRST(&ic->ic_pmksa)) != NULL) {
+                TAILQ_REMOVE(&ic->ic_pmksa, pmk, pmk_next);
+                explicit_bzero(pmk, sizeof(*pmk));
+                free(pmk);
+        }
 
-	/* clear all group keys from memory */
-	ieee80211_crypto_clear_groupkeys(ic);
+        /* clear all group keys from memory */
+        ieee80211_crypto_clear_groupkeys(ic);
 
-	/* clear pre-shared key from memory */
-	explicit_bzero(ic->ic_psk, IEEE80211_PMK_LEN);
+        /* clear pre-shared key from memory */
+        explicit_bzero(ic->ic_psk, IEEE80211_PMK_LEN);
 
 #ifndef IEEE80211_STA_ONLY
-	timeout_del(&ic->ic_tkip_micfail_timeout);
+        timeout_del(&ic->ic_tkip_micfail_timeout);
     timeout_free(&ic->ic_tkip_micfail_timeout);
 #endif
 }
@@ -143,12 +143,12 @@ ieee80211_mld_key_link(struct ieee80211com *ic, const uint8_t *addr, int tx)
 void
 ieee80211_crypto_clear_groupkeys(struct ieee80211com *ic)
 {
-	int i;
+        int i;
 #ifdef AIRPORT_WCL
     ieee80211_mld_clear_groupkeys(ic);
 #endif
 
-	for (i = 0; i < IEEE80211_GROUP_NKID; i++) {
+        for (i = 0; i < IEEE80211_GROUP_NKID; i++) {
         struct ieee80211_key *k = &ic->ic_nw_keys[i];
         if (k->k_cipher != IEEE80211_CIPHER_NONE)
             (*ic->ic_delete_key)(ic, NULL, k);
@@ -162,47 +162,47 @@ ieee80211_crypto_clear_groupkeys(struct ieee80211com *ic)
 int
 ieee80211_cipher_keylen(enum ieee80211_cipher cipher)
 {
-	switch (cipher) {
-	case IEEE80211_CIPHER_WEP40:
-		return 5;
-	case IEEE80211_CIPHER_TKIP:
-		return 32;
-	case IEEE80211_CIPHER_CCMP:
-		return 16;
-	case IEEE80211_CIPHER_WEP104:
-		return 13;
-	case IEEE80211_CIPHER_BIP:
-		return 16;
-	case IEEE80211_CIPHER_BIP_GMAC_128:
-		return 16;
-	case IEEE80211_CIPHER_BIP_GMAC_256:
-		return 32;
-	default:	/* unknown cipher */
-		return 0;
-	}
+        switch (cipher) {
+        case IEEE80211_CIPHER_WEP40:
+                return 5;
+        case IEEE80211_CIPHER_TKIP:
+                return 32;
+        case IEEE80211_CIPHER_CCMP:
+                return 16;
+        case IEEE80211_CIPHER_WEP104:
+                return 13;
+        case IEEE80211_CIPHER_BIP:
+                return 16;
+        case IEEE80211_CIPHER_BIP_GMAC_128:
+                return 16;
+        case IEEE80211_CIPHER_BIP_GMAC_256:
+                return 32;
+        default:        /* unknown cipher */
+                return 0;
+        }
 }
 
 int
 ieee80211_cipher_mmie_len(enum ieee80211_cipher cipher)
 {
-	switch (cipher) {
-	case IEEE80211_CIPHER_BIP:
-		return IEEE80211_MMIE_LEN;
-	case IEEE80211_CIPHER_BIP_GMAC_128:
-	case IEEE80211_CIPHER_BIP_GMAC_256:
-		return 26;
-	default:
-		return 0;
-	}
+        switch (cipher) {
+        case IEEE80211_CIPHER_BIP:
+                return IEEE80211_MMIE_LEN;
+        case IEEE80211_CIPHER_BIP_GMAC_128:
+        case IEEE80211_CIPHER_BIP_GMAC_256:
+                return 26;
+        default:
+                return 0;
+        }
 }
 
 int
 ieee80211_set_key(struct ieee80211com *ic, struct ieee80211_node *ni,
     struct ieee80211_key *k)
 {
-	int error;
+        int error;
 
-	switch (k->k_cipher) {
+        switch (k->k_cipher) {
     case IEEE80211_CIPHER_WEP40:
     case IEEE80211_CIPHER_WEP104:
         error = ieee80211_wep_set_key(ic, k);
@@ -233,7 +233,7 @@ void
 ieee80211_delete_key(struct ieee80211com *ic, struct ieee80211_node *ni,
     struct ieee80211_key *k)
 {
-	switch (k->k_cipher) {
+        switch (k->k_cipher) {
     case IEEE80211_CIPHER_WEP40:
     case IEEE80211_CIPHER_WEP104:
         ieee80211_wep_delete_key(ic, k);
@@ -258,10 +258,10 @@ struct ieee80211_key *
 ieee80211_get_txkey(struct ieee80211com *ic, const struct ieee80211_frame *wh,
     struct ieee80211_node *ni)
 {
-	int kid;
-	ni = ieee80211_mld_primary_node(ic, ni);
+        int kid;
+        ni = ieee80211_mld_primary_node(ic, ni);
 
-	if ((ic->ic_flags & IEEE80211_F_RSNON) &&
+        if ((ic->ic_flags & IEEE80211_F_RSNON) &&
         !IEEE80211_IS_MULTICAST(wh->i_addr1) &&
         ni->ni_rsncipher != IEEE80211_CIPHER_USEGROUP)
         return &ni->ni_pairwise_key;
@@ -367,41 +367,39 @@ ieee80211_encrypt(struct ieee80211com *ic, mbuf_t m0,
     struct ieee80211_key *k)
 {
     if ((k->k_flags & IEEE80211_KEY_SWCRYPTO) == 0) {
-		XYLog("%s: BUG! key unset for sw crypto. k_id: %d k_cipher: %d k_flags: %d\n", __FUNCTION__, k->k_id, k->k_cipher, k->k_flags);
+                XYLog("%s: BUG! key unset for sw crypto. k_id: %d k_cipher: %d k_flags: %d\n", __FUNCTION__, k->k_id, k->k_cipher, k->k_flags);
         mbuf_freem(m0);
         return NULL;
     }
-    
-    XYLog("%s kid=%d cipher=%d\n", __FUNCTION__, k->k_id, k->k_cipher);
 
-	switch (k->k_cipher) {
-	case IEEE80211_CIPHER_WEP40:
-	case IEEE80211_CIPHER_WEP104:
-		m0 = ieee80211_wep_encrypt(ic, m0, k);
-		break;
-	case IEEE80211_CIPHER_TKIP:
-		m0 = ieee80211_tkip_encrypt(ic, m0, k);
-		break;
-	case IEEE80211_CIPHER_CCMP:
-		m0 = ieee80211_ccmp_encrypt(ic, m0, k);
-		break;
-	case IEEE80211_CIPHER_BIP:
-		m0 = ieee80211_bip_encap(ic, m0, k);
-		break;
-	default:
-		/* should not get there */
-		panic("invalid key cipher 0x%x", k->k_cipher);
-	}
-	return m0;
+        switch (k->k_cipher) {
+        case IEEE80211_CIPHER_WEP40:
+        case IEEE80211_CIPHER_WEP104:
+                m0 = ieee80211_wep_encrypt(ic, m0, k);
+                break;
+        case IEEE80211_CIPHER_TKIP:
+                m0 = ieee80211_tkip_encrypt(ic, m0, k);
+                break;
+        case IEEE80211_CIPHER_CCMP:
+                m0 = ieee80211_ccmp_encrypt(ic, m0, k);
+                break;
+        case IEEE80211_CIPHER_BIP:
+                m0 = ieee80211_bip_encap(ic, m0, k);
+                break;
+        default:
+                /* should not get there */
+                panic("invalid key cipher 0x%x", k->k_cipher);
+        }
+        return m0;
 }
 
 mbuf_t
 ieee80211_decrypt(struct ieee80211com *ic, mbuf_t m0,
     struct ieee80211_node *ni)
 {
-	struct ieee80211_key *k;
+        struct ieee80211_key *k;
 
-	/* find key for decryption */
+        /* find key for decryption */
     k = ieee80211_get_rxkey(ic, m0, ni);
     if (k == NULL || (k->k_flags & IEEE80211_KEY_SWCRYPTO) == 0) {
         mbuf_freem(m0);
@@ -438,7 +436,7 @@ ieee80211_prf(const u_int8_t *key, size_t key_len, const u_int8_t *label,
     size_t label_len, const u_int8_t *context, size_t context_len,
     u_int8_t *output, size_t len)
 {
-	HMAC_SHA1_CTX ctx;
+        HMAC_SHA1_CTX ctx;
     u_int8_t digest[SHA1_DIGEST_LENGTH];
     u_int8_t count;
 
@@ -467,7 +465,7 @@ ieee80211_kdf(const u_int8_t *key, size_t key_len, const u_int8_t *label,
     size_t label_len, const u_int8_t *context, size_t context_len,
     u_int8_t *output, size_t len)
 {
-	HMAC_SHA256_CTX ctx;
+        HMAC_SHA256_CTX ctx;
     u_int8_t digest[SHA256_DIGEST_LENGTH];
     u_int16_t i, iter, length;
 
@@ -531,32 +529,32 @@ static void
 ieee80211_pmkid_sha1(const u_int8_t *pmk, const u_int8_t *aa,
     const u_int8_t *spa, u_int8_t *pmkid)
 {
-	HMAC_SHA1_CTX ctx;
-	u_int8_t digest[SHA1_DIGEST_LENGTH];
+        HMAC_SHA1_CTX ctx;
+        u_int8_t digest[SHA1_DIGEST_LENGTH];
 
-	HMAC_SHA1_Init(&ctx, pmk, IEEE80211_PMK_LEN);
-	HMAC_SHA1_Update(&ctx, (const u_int8_t *)"PMK Name", 8);
-	HMAC_SHA1_Update(&ctx, aa, IEEE80211_ADDR_LEN);
-	HMAC_SHA1_Update(&ctx, spa, IEEE80211_ADDR_LEN);
-	HMAC_SHA1_Final(digest, &ctx);
-	/* use the first 128 bits of HMAC-SHA1 */
-	memcpy(pmkid, digest, IEEE80211_PMKID_LEN);
+        HMAC_SHA1_Init(&ctx, pmk, IEEE80211_PMK_LEN);
+        HMAC_SHA1_Update(&ctx, (const u_int8_t *)"PMK Name", 8);
+        HMAC_SHA1_Update(&ctx, aa, IEEE80211_ADDR_LEN);
+        HMAC_SHA1_Update(&ctx, spa, IEEE80211_ADDR_LEN);
+        HMAC_SHA1_Final(digest, &ctx);
+        /* use the first 128 bits of HMAC-SHA1 */
+        memcpy(pmkid, digest, IEEE80211_PMKID_LEN);
 }
 
 static void
 ieee80211_pmkid_sha256(const u_int8_t *pmk, const u_int8_t *aa,
     const u_int8_t *spa, u_int8_t *pmkid)
 {
-	HMAC_SHA256_CTX ctx;
-	u_int8_t digest[SHA256_DIGEST_LENGTH];
+        HMAC_SHA256_CTX ctx;
+        u_int8_t digest[SHA256_DIGEST_LENGTH];
 
-	HMAC_SHA256_Init(&ctx, pmk, IEEE80211_PMK_LEN);
-	HMAC_SHA256_Update(&ctx, (uint8_t *)"PMK Name", 8);
-	HMAC_SHA256_Update(&ctx, aa, IEEE80211_ADDR_LEN);
-	HMAC_SHA256_Update(&ctx, spa, IEEE80211_ADDR_LEN);
-	HMAC_SHA256_Final(digest, &ctx);
-	/* use the first 128 bits of HMAC-SHA-256 */
-	memcpy(pmkid, digest, IEEE80211_PMKID_LEN);
+        HMAC_SHA256_Init(&ctx, pmk, IEEE80211_PMK_LEN);
+        HMAC_SHA256_Update(&ctx, (uint8_t *)"PMK Name", 8);
+        HMAC_SHA256_Update(&ctx, aa, IEEE80211_ADDR_LEN);
+        HMAC_SHA256_Update(&ctx, spa, IEEE80211_ADDR_LEN);
+        HMAC_SHA256_Final(digest, &ctx);
+        /* use the first 128 bits of HMAC-SHA-256 */
+        memcpy(pmkid, digest, IEEE80211_PMKID_LEN);
 }
 
 /*
@@ -566,10 +564,10 @@ void
 ieee80211_derive_pmkid(enum ieee80211_akm akm, const u_int8_t *pmk,
     const u_int8_t *aa, const u_int8_t *spa, u_int8_t *pmkid)
 {
-	if (ieee80211_is_sha256_akm(akm))
-		ieee80211_pmkid_sha256(pmk, aa, spa, pmkid);
-	else
-		ieee80211_pmkid_sha1(pmk, aa, spa, pmkid);
+        if (ieee80211_is_sha256_akm(akm))
+                ieee80211_pmkid_sha256(pmk, aa, spa, pmkid);
+        else
+                ieee80211_pmkid_sha1(pmk, aa, spa, pmkid);
 }
 
 
@@ -674,10 +672,10 @@ out:
 }
 
 typedef union _ANY_CTX {
-	HMAC_MD5_CTX	md5;
-	HMAC_SHA1_CTX	sha1;
-	HMAC_SHA256_CTX	sha256;
-	AES_CMAC_CTX	cmac;
+        HMAC_MD5_CTX    md5;
+        HMAC_SHA1_CTX   sha1;
+        HMAC_SHA256_CTX sha256;
+        AES_CMAC_CTX    cmac;
 } ANY_CTX;
 
 /*
@@ -691,11 +689,11 @@ ieee80211_eapol_key_mic(struct ieee80211_eapol_key *key, const u_int8_t *kck,
     u_int32_t akm)
 {
     XYLog("%s\n", __FUNCTION__);
-	u_int8_t digest[SHA256_DIGEST_LENGTH];
-	ANY_CTX ctx;	/* XXX off stack? */
-	u_int len;
+        u_int8_t digest[SHA256_DIGEST_LENGTH];
+        ANY_CTX ctx;    /* XXX off stack? */
+        u_int len;
 
-	len = BE_READ_2(key->len) + 4;
+        len = BE_READ_2(key->len) + 4;
 
     switch (BE_READ_2(key->info) & EAPOL_KEY_VERSION_MASK) {
     case EAPOL_KEY_DESC_V1:
@@ -736,7 +734,7 @@ int
 ieee80211_eapol_key_check_mic(struct ieee80211_eapol_key *key,
     const u_int8_t *kck, u_int32_t akm)
 {
-	u_int8_t mic[EAPOL_KEY_MIC_LEN];
+        u_int8_t mic[EAPOL_KEY_MIC_LEN];
 
     memcpy(mic, key->mic, EAPOL_KEY_MIC_LEN);
     memset(key->mic, 0, EAPOL_KEY_MIC_LEN);
@@ -755,16 +753,16 @@ void
 ieee80211_eapol_key_encrypt(struct ieee80211com *ic,
     struct ieee80211_eapol_key *key, const u_int8_t *kek)
 {
-	union {
-		struct rc4_ctx rc4;
-		aes_key_wrap_ctx aes;
-	} ctx;	/* XXX off stack? */
-	u_int8_t keybuf[EAPOL_KEY_IV_LEN + 16];
-	u_int16_t len, info;
-	u_int8_t *data;
-	int n;
+        union {
+                struct rc4_ctx rc4;
+                aes_key_wrap_ctx aes;
+        } ctx;  /* XXX off stack? */
+        u_int8_t keybuf[EAPOL_KEY_IV_LEN + 16];
+        u_int16_t len, info;
+        u_int8_t *data;
+        int n;
 
-	len  = BE_READ_2(key->paylen);
+        len  = BE_READ_2(key->paylen);
     info = BE_READ_2(key->info);
     data = (u_int8_t *)(key + 1);
 
@@ -803,7 +801,7 @@ ieee80211_eapol_key_encrypt(struct ieee80211com *ic,
         break;
     }
 }
-#endif	/* IEEE80211_STA_ONLY */
+#endif  /* IEEE80211_STA_ONLY */
 
 /*
  * Decrypt the Key Data field of an EAPOL-Key frame using the specified Key
@@ -814,7 +812,7 @@ int
 ieee80211_eapol_key_decrypt(struct ieee80211_eapol_key *key,
     const u_int8_t *kek)
 {
-	union {
+        union {
         struct rc4_ctx rc4;
         aes_key_wrap_ctx aes;
     } ctx;    /* XXX off stack? */
@@ -858,39 +856,39 @@ struct ieee80211_pmk *
 ieee80211_pmksa_add(struct ieee80211com *ic, enum ieee80211_akm akm,
     const u_int8_t *macaddr, const u_int8_t *key, u_int32_t lifetime)
 {
-	struct ieee80211_pmk *pmk;
+        struct ieee80211_pmk *pmk;
 
-	/* SAE PMKIDs come from the commit scalars, not from the PMK. */
-	if (akm == IEEE80211_AKM_SAE)
-		return NULL;
+        /* SAE PMKIDs come from the commit scalars, not from the PMK. */
+        if (akm == IEEE80211_AKM_SAE)
+                return NULL;
 
-	/* check if an entry already exists for this (STA,AKMP) */
-	TAILQ_FOREACH(pmk, &ic->ic_pmksa, pmk_next) {
-		if (pmk->pmk_akm == akm &&
-		    IEEE80211_ADDR_EQ(pmk->pmk_macaddr, macaddr))
-			break;
-	}
-	if (pmk == NULL) {
-		/* allocate a new PMKSA entry */
-		if ((pmk = (struct ieee80211_pmk *)malloc(sizeof(*pmk), 0, 0)) == NULL)
-			return NULL;
-		pmk->pmk_akm = akm;
-		IEEE80211_ADDR_COPY(pmk->pmk_macaddr, macaddr);
-		TAILQ_INSERT_TAIL(&ic->ic_pmksa, pmk, pmk_next);
-	}
-	memcpy(pmk->pmk_key, key, IEEE80211_PMK_LEN);
-	pmk->pmk_lifetime = lifetime;	/* XXX not used yet */
+        /* check if an entry already exists for this (STA,AKMP) */
+        TAILQ_FOREACH(pmk, &ic->ic_pmksa, pmk_next) {
+                if (pmk->pmk_akm == akm &&
+                    IEEE80211_ADDR_EQ(pmk->pmk_macaddr, macaddr))
+                        break;
+        }
+        if (pmk == NULL) {
+                /* allocate a new PMKSA entry */
+                if ((pmk = (struct ieee80211_pmk *)malloc(sizeof(*pmk), 0, 0)) == NULL)
+                        return NULL;
+                pmk->pmk_akm = akm;
+                IEEE80211_ADDR_COPY(pmk->pmk_macaddr, macaddr);
+                TAILQ_INSERT_TAIL(&ic->ic_pmksa, pmk, pmk_next);
+        }
+        memcpy(pmk->pmk_key, key, IEEE80211_PMK_LEN);
+        pmk->pmk_lifetime = lifetime;   /* XXX not used yet */
 #ifndef IEEE80211_STA_ONLY
-	if (ic->ic_opmode == IEEE80211_M_HOSTAP) {
-		ieee80211_derive_pmkid(pmk->pmk_akm, pmk->pmk_key,
-		    ic->ic_myaddr, macaddr, pmk->pmk_pmkid);
-	} else
+        if (ic->ic_opmode == IEEE80211_M_HOSTAP) {
+                ieee80211_derive_pmkid(pmk->pmk_akm, pmk->pmk_key,
+                    ic->ic_myaddr, macaddr, pmk->pmk_pmkid);
+        } else
 #endif
-	{
-		ieee80211_derive_pmkid(pmk->pmk_akm, pmk->pmk_key,
-		    macaddr, ic->ic_myaddr, pmk->pmk_pmkid);
-	}
-	return pmk;
+        {
+                ieee80211_derive_pmkid(pmk->pmk_akm, pmk->pmk_key,
+                    macaddr, ic->ic_myaddr, pmk->pmk_pmkid);
+        }
+        return pmk;
 }
 
 /*
@@ -900,14 +898,14 @@ struct ieee80211_pmk *
 ieee80211_pmksa_find(struct ieee80211com *ic, struct ieee80211_node *ni,
     const u_int8_t *pmkid)
 {
-	struct ieee80211_pmk *pmk;
+        struct ieee80211_pmk *pmk;
 
-	TAILQ_FOREACH(pmk, &ic->ic_pmksa, pmk_next) {
+        TAILQ_FOREACH(pmk, &ic->ic_pmksa, pmk_next) {
         if (pmk->pmk_akm == ni->ni_rsnakms &&
             IEEE80211_ADDR_EQ(pmk->pmk_macaddr, ni->ni_macaddr) &&
             (pmkid == NULL ||
              memcmp(pmk->pmk_pmkid, pmkid, IEEE80211_PMKID_LEN) == 0))
             break;
     }
-	return pmk;
+        return pmk;
 }

@@ -159,6 +159,12 @@ public:
 
     bool createMediumTables(const IONetworkMedium **primary);
     void releaseAll();
+    /* Late-start failure cleanup: release the interface objects that
+     * were created during start() (which releaseAll() does not own),
+     * detach the HAL service (stops its DMA/interrupt resources), then
+     * run the common teardown. netifRegistered selects whether the
+     * skywalk interface completed attachInterface() before the failure. */
+    void stopFromStartFailure(IOService *provider, bool netifRegistered);
     void watchdogAction(IOTimerEventSource *timer);
     
     virtual SInt32 enableFeature(IO80211FeatureCode, void*) override;

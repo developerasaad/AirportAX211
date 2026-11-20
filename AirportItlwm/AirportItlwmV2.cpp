@@ -28,7 +28,23 @@ void AirportItlwm::releaseAll()
 {
     if (fWatchdogWorkLoop) {
         if (watchdogTimer) {
-            watchdogTimer->cancelTimeout();
+            /* Cancel through the command gate so an in-flight watchdog
+             * callback (which re-arms itself through the timer parameter)
+             * completes before the source is torn down; the gate is still
+             * installed at this point. A bare cancelTimeout() here raced
+             * with the callback on the same workloop. */
+            if (_fCommandGate) {
+                _fCommandGate->runAction(
+                    [](OSObject *, void *arg0, void *, void *, void *) -> IOReturn {
+                        IOTimerEventSource *timer = (IOTimerEventSource *)arg0;
+                        timer->cancelTimeout();
+                        timer->disable();
+                        return kIOReturnSuccess;
+                    }, watchdogTimer);
+            } else {
+                watchdogTimer->cancelTimeout();
+                watchdogTimer->disable();
+            }
             fWatchdogWorkLoop->removeEventSource(watchdogTimer);
             watchdogTimer->release();
             watchdogTimer = NULL;
@@ -63,6 +79,19 @@ void AirportItlwm::releaseAll()
 #ifndef AIRPORT_WCL
     OSSafeReleaseNULL(driverFaultReporter);
 #endif
+    if (_fWorkloop) {
+        /* Cancel the scan timer BEFORE releasing the HAL its callback
+         * dereferences; previously it was removed only after
+         * fHalService->release(), leaving a window in which an in-flight
+         * fakeScanDone touched freed memory. */
+        if (scanSource) {
+            scanSource->cancelTimeout();
+            scanSource->disable();
+            _fWorkloop->removeEventSource(scanSource);
+            scanSource->release();
+            scanSource = NULL;
+        }
+    }
     if (fHalService) {
         fHalService->release();
         fHalService = NULL;
@@ -73,13 +102,6 @@ void AirportItlwm::releaseAll()
             _fWorkloop->removeEventSource(_fCommandGate);
             _fCommandGate->release();
             _fCommandGate = NULL;
-        }
-        if (scanSource) {
-            scanSource->cancelTimeout();
-            scanSource->disable();
-            _fWorkloop->removeEventSource(scanSource);
-            scanSource->release();
-            scanSource = NULL;
         }
         _fWorkloop->release();
         _fWorkloop = NULL;
@@ -119,12 +141,40 @@ eventHandler(struct ieee80211com *ic, int msgCode, void *data)
 #endif
 }
 
+void AirportItlwm::stopFromStartFailure(IOService *provider, bool netifRegistered)
+{
+    /* Late-start failure cleanup. Previously these paths called only
+     * super::stop() + releaseAll(): the skywalk interface object created
+     * during start() leaked, and the HAL service was never detached, so
+     * its interrupt source, task queues and DMA rings leaked as well
+     * (the early failure paths already detached). */
+    if (fNetIf) {
+        if (netifRegistered)
+            detachInterface(fNetIf, true);
+        OSSafeReleaseNULL(fNetIf);
+    }
+    if (fHalService && pciNub)
+        fHalService->detach(pciNub);
+    super::stop(provider);
+    releaseAll();
+}
+
 void AirportItlwm::watchdogAction(IOTimerEventSource *timer)
 {
+    /* Runs on the main workloop, serialized with the RX/newstate/timeout
+     * paths (previously a separate workloop ran ieee80211_watchdog
+     * concurrently with the gate-serialized MLME state machine, and
+     * splnet() is a no-op in this port). Guard against teardown:
+     * releaseAll() cancels this timer before the HAL is released, but a
+     * callback already in flight must not touch freed memory or re-arm
+     * through a cleared member pointer. */
+    if (!fHalService)
+        return;
     struct _ifnet *ifp = &fHalService->get80211Controller()->ic_ac.ac_if;
-    (*ifp->if_watchdog)(ifp);
+    if (ifp->if_watchdog)
+        (*ifp->if_watchdog)(ifp);
 
-    watchdogTimer->setTimeoutMS(kWatchDogTimerPeriod);
+    timer->setTimeoutMS(kWatchDogTimerPeriod);
 }
 
 void AirportItlwm::fakeScanDone(OSObject *owner, IOTimerEventSource *sender)
@@ -457,8 +507,7 @@ bool AirportItlwm::start(IOService *provider)
     if (!fNetIf->init(this)) {
 #endif
         XYLogE("Skywalk interface init fail\n");
-        super::stop(provider);
-        releaseAll();
+        stopFromStartFailure(provider, false);
         return false;
     }
     fNetIf->setInterfaceRole(1);
@@ -467,21 +516,18 @@ bool AirportItlwm::start(IOService *provider)
 #ifndef AIRPORT_WCL
     if (!initCCLogs()) {
         XYLogE("CCLog init fail\n");
-        super::stop(provider);
-        releaseAll();
+        stopFromStartFailure(provider, false);
         return false;
     }
 #endif
     if (!fNetIf->attach(this)) {
         XYLogE("attach to service fail\n");
-        super::stop(provider);
-        releaseAll();
+        stopFromStartFailure(provider, false);
         return false;
     }
     if (!attachInterface(fNetIf, this)) {
         XYLogE("attach to interface fail\n");
-        super::stop(provider);
-        releaseAll();
+        stopFromStartFailure(provider, true);
         return false;
     }
     if (!IONetworkController::attachInterface((IONetworkInterface **)&bsdInterface,
@@ -492,23 +538,20 @@ bool AirportItlwm::start(IOService *provider)
 #endif
                                              )) {
         XYLogE("attach to IONetworkController interface fail\n");
-        super::stop(provider);
-        releaseAll();
+        stopFromStartFailure(provider, true);
         return false;
     }
     memset(&registInfo, 0, sizeof(registInfo));
     if (!fNetIf->initRegistrationInfo(&registInfo, 1, sizeof(registInfo))) {
         XYLogE("initRegistrationInfo fail\n");
-        super::stop(provider);
-        releaseAll();
+        stopFromStartFailure(provider, true);
         return false;
     }
 #ifdef AIRPORT_WCL
     fNetIf->mExpansionData->fRegistrationInfo = (struct IOSkywalkNetworkInterface::RegistrationInfo *)IOMalloc(sizeof(struct IOSkywalkNetworkInterface::RegistrationInfo));
     fNetIf->mExpansionData2->fRegistrationInfo = (struct IOSkywalkEthernetInterface::RegistrationInfo *)IOMalloc(sizeof(struct IOSkywalkEthernetInterface::RegistrationInfo));
     if (!fNetIf->mExpansionData->fRegistrationInfo || !fNetIf->mExpansionData2->fRegistrationInfo) {
-        super::stop(provider);
-        releaseAll();
+        stopFromStartFailure(provider, true);
         return false;
     }
     memcpy(fNetIf->mExpansionData->fRegistrationInfo, &registInfo, sizeof(registInfo));
@@ -516,16 +559,14 @@ bool AirportItlwm::start(IOService *provider)
     if (fNetIf->getInterfaceRole() == 1)
         fNetIf->deferBSDAttach(true);
     if (!fNetIf->start(this)) {
-        super::stop(provider);
-        releaseAll();
+        stopFromStartFailure(provider, true);
         return false;
     }
 
 #else
     if (!fNetIf->initRegistrationInfo(&registInfo, 1, sizeof(registInfo))) {
         XYLogE("initRegistrationInfo fail\n");
-        super::stop(provider);
-        releaseAll();
+        stopFromStartFailure(provider, true);
         return false;
     }
     fNetIf->mExpansionData->fRegistrationInfo = (struct IOSkywalkNetworkInterface::RegistrationInfo *)IOMalloc(sizeof(struct IOSkywalkNetworkInterface::RegistrationInfo));
@@ -1020,14 +1061,6 @@ IOReturn AirportItlwm::setHardwareAddress(const void *addrP, UInt32 addrBytes)
     auto ic = fHalService->get80211Controller();
     bool initializing = (ic->ic_if.if_flags & IFF_UP) && !(ic->ic_if.if_flags & IFF_RUNNING);
     auto update = AirportWCL::planMacUpdate(ic->ic_myaddr, address, addrBytes, initializing);
-    if (pciNub && addrBytes == 6) {
-        char requested[18], current[18];
-        snprintf(requested, sizeof(requested), "%02x:%02x:%02x:%02x:%02x:%02x",
-                 address[0], address[1], address[2], address[3], address[4], address[5]);
-        snprintf(current, sizeof(current), "%02x:%02x:%02x:%02x:%02x:%02x",
-                 ic->ic_myaddr[0], ic->ic_myaddr[1], ic->ic_myaddr[2],
-                 ic->ic_myaddr[3], ic->ic_myaddr[4], ic->ic_myaddr[5]);
-    }
     if (update == AirportWCL::MacUpdate::Invalid)
         return kIOReturnBadArgument;
     if (update == AirportWCL::MacUpdate::Busy) {

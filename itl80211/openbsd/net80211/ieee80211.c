@@ -71,7 +71,7 @@
 #include <net80211/ieee80211_priv.h>
 
 #ifdef IEEE80211_DEBUG
-int	ieee80211_debug = 0;
+int     ieee80211_debug = 0;
 #endif
 
 ///compat for undefined symbols
@@ -250,21 +250,21 @@ ieee80211_ifattach(struct _ifnet *ifp, IOEthernetController *controller)
     ieee80211_channel_init(ifp);
     
     /* IEEE 802.11 defines a MTU >= 2290 */
-    //	ifp->if_capabilities |= IFCAP_VLAN_MTU;
+    //  ifp->if_capabilities |= IFCAP_VLAN_MTU;
     
     ieee80211_setbasicrates(ic);
     (void)ieee80211_setmode(ic, (enum ieee80211_phymode)ic->ic_curmode);
     
     if (ic->ic_lintval == 0)
-        ic->ic_lintval = 100;		/* default sleep */
+        ic->ic_lintval = 100;           /* default sleep */
     ic->ic_bmissthres = IEEE80211_BEACON_MISS_THRES;
-    ic->ic_dtim_period = 1;	/* all TIMs are DTIMs */
+    ic->ic_dtim_period = 1;     /* all TIMs are DTIMs */
     
     ieee80211_node_attach(ifp);
     ieee80211_proto_attach(ifp);
     
-    //	if_addgroup(ifp, "wlan");
-    //	ifp->if_priority = IF_WIRELESS_DEFAULT_PRIORITY;
+    //  if_addgroup(ifp, "wlan");
+    //  ifp->if_priority = IF_WIRELESS_DEFAULT_PRIORITY;
     
     ieee80211_set_link_state(ic, LINK_STATE_DOWN);
     
@@ -614,8 +614,8 @@ IFM_MAKEWORD(IFM_IEEE80211, (_s), (_o), 0), 0, NULL)
     ieee80211_media_status(ifp, &imr);
     ifmedia_set(&ic->ic_media, imr.ifm_active);
     
-    //	if (maxrate)
-    //		ifp->if_baudrate = IF_Mbps(maxrate);
+    //  if (maxrate)
+    //          ifp->if_baudrate = IF_Mbps(maxrate);
     
     
 #undef ADD
@@ -954,16 +954,28 @@ ieee80211_watchdog(struct _ifnet *ifp)
                       "association" : "authentication",
                       ether_sprintf(ic->ic_bss->ni_macaddr));
             ni = ieee80211_find_node(ic, ic->ic_bss->ni_macaddr);
-            if (ni)
-                ni->ni_fails++;
             if (ic->ic_state == IEEE80211_S_AUTH && ni &&
-                ieee80211_auth_sae_timeout(ic, ic->ic_bss, ni->ni_fails))
+                ieee80211_auth_sae_timeout(ic, ic->ic_bss, ni->ni_fails + 1)) {
+                /* SAE retransmission handling consumed this timeout.
+                 * Count it exactly once here, preserving the original
+                 * three-attempt budget (the helper sees the same value
+                 * the pre-fix code passed after its unconditional
+                 * increment, but without also counting again in the
+                 * SCAN transition below). */
+                ni->ni_fails++;
                 goto done;
+            }
             /* Try more times to join, some drivers will timeout when doing auth/assoc */
             if (ic->ic_state == IEEE80211_S_AUTH && ni && ni->ni_fails < 3) {
+                /* Count this attempt against the retry budget. */
+                ni->ni_fails++;
                 ieee80211_node_join_bss(ic, ni);
                 goto done;
             }
+            /* Giving up: the SCAN transition below (ieee80211_newstate)
+             * already poisons the node exactly once; counting the same
+             * timeout here as well double-incremented ni_fails and made a
+             * single transient association timeout evict the AP. */
             if (ISSET(ic->ic_flags, IEEE80211_F_AUTO_JOIN))
                 ieee80211_deselect_ess(ic);
         }

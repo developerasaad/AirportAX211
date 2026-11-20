@@ -56,7 +56,7 @@ static uint16_t wclCurrentChannelSpec(ieee80211com *ic)
 
 static void clearWCLSAE(ieee80211com *ic)
 {
-	++ic->ic_sae_generation;
+        ++ic->ic_sae_generation;
     explicit_bzero(ic->ic_sae_pt, sizeof(ic->ic_sae_pt));
     explicit_bzero(ic->ic_sae_pwe, sizeof(ic->ic_sae_pwe));
     explicit_bzero(&ic->ic_sae_auth, sizeof(ic->ic_sae_auth));
@@ -1381,6 +1381,30 @@ void AirportItlwmSkywalkInterface::handleWCLLink(bool up)
     }
     if (up && joinPending && firstBeaconNotified)
         finishWCLJoin(0, 0, kIOReturnSuccess);
+    else if (up && !joinPending && !wclLinkIndicated && assocNotified) {
+        /* Link recovered without a new WCL join: an AP deauth/disassoc was
+         * answered by the in-driver re-authentication, or the driver
+         * recovered internally while associated. The down event was already
+         * posted above; mirror it so WCL (and the menu bar) see the link
+         * come back up instead of staying "disconnected" while traffic
+         * flows. Re-track joinBSSID in case the driver re-associated to a
+         * different BSSID. (On open networks a leftover des_essid can also
+         * produce an autonomous re-join after a failed WCL join; posting
+         * the real state is the truthful report either way.) */
+        ieee80211com *ic = fHalService->get80211Controller();
+        AirportWCL::LinkStatusEvent event = {};
+        if (ic->ic_bss != NULL) {
+            memcpy(event.bssid, ic->ic_bss->ni_bssid, sizeof(event.bssid));
+            if (!IEEE80211_ADDR_EQ(ic->ic_bss->ni_bssid, joinBSSID))
+                memcpy(joinBSSID, ic->ic_bss->ni_bssid, sizeof(joinBSSID));
+        } else {
+            memcpy(event.bssid, joinBSSID, sizeof(event.bssid));
+        }
+        event.up = 1;
+        event.reason = 255;
+        wclLinkIndicated = true;
+        instance->postMessage(this, AirportWCL::LinkStatus, &event, sizeof(event), true);
+    }
     updateWCLLinkQuality(true);
 }
 
