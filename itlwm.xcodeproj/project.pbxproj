@@ -107,8 +107,6 @@
 		F8D94CDB2B9ABFE20081A3C4 /* zutil.c in Sources */ = {isa = PBXBuildFile; fileRef = F8FA0EED2501E8C100B1822E /* zutil.c */; };
 		F8D94CDC2B9ABFE20081A3C4 /* ItlHalService.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8D364F624F93AFD0029340B /* ItlHalService.cpp */; };
 		F8D94CDD2B9ABFE20081A3C4 /* ItlIwx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8D6CD642442E8F200D2A454 /* ItlIwx.cpp */; };
-		05CE876E5DD1273BACA2257F /* ItlIwxApi86.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2FCFFCACFACE2B6B898E0941 /* ItlIwxApi86.cpp */; };
-		14BA3EB9CA00385AEA097AC1 /* ItlIwxMld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6805B64BC9316BE1F210EADC /* ItlIwxMld.cpp */; };
 		F8D94CED2B9ABFE20081A3C4 /* IOPCIEDeviceWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8A0287D2A4A80EA00C6DE90 /* IOPCIEDeviceWrapper.cpp */; };
 		F8D94CF02B9ABFE20081A3C4 /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5088ECBC252884870068A63D /* libkmod.a */; };
 		A7D000012026100700000001 /* ItlDma.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A7D000022026100700000001 /* ItlDma.cpp */; };
@@ -279,10 +277,6 @@
 		F8D364F724F93AFD0029340B /* ItlHalService.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ItlHalService.hpp; sourceTree = "<group>"; };
 		F8D6CD622442E8F200D2A454 /* ItlIwx.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ItlIwx.hpp; sourceTree = "<group>"; };
 		F8D6CD642442E8F200D2A454 /* ItlIwx.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ItlIwx.cpp; sourceTree = "<group>"; };
-		2FCFFCACFACE2B6B898E0941 /* ItlIwxApi86.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ItlIwxApi86.cpp; sourceTree = "<group>"; };
-		6805B64BC9316BE1F210EADC /* ItlIwxMld.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ItlIwxMld.cpp; sourceTree = "<group>"; };
-		B128BCB3B843CA6787661F3E /* if_iwxapi86.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = if_iwxapi86.h; sourceTree = "<group>"; };
-		A41344A0A23466920502E728 /* if_iwxmld.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = if_iwxmld.h; sourceTree = "<group>"; };
 		F8D6CD6C2442F20C00D2A454 /* if_iwxreg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = if_iwxreg.h; sourceTree = "<group>"; };
 		F8D6CD6D2442F20C00D2A454 /* if_iwxvar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = if_iwxvar.h; sourceTree = "<group>"; };
 		F8E3806526D533D400568FEB /* iwlwifi-ty-a0-gf-a0.pnvm */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-ty-a0-gf-a0.pnvm"; sourceTree = "<group>"; };
@@ -543,10 +537,6 @@
 				F8D6CD6D2442F20C00D2A454 /* if_iwxvar.h */,
 				F8D6CD622442E8F200D2A454 /* ItlIwx.hpp */,
 				F8D6CD642442E8F200D2A454 /* ItlIwx.cpp */,
-				2FCFFCACFACE2B6B898E0941 /* ItlIwxApi86.cpp */,
-				6805B64BC9316BE1F210EADC /* ItlIwxMld.cpp */,
-				B128BCB3B843CA6787661F3E /* if_iwxapi86.h */,
-				A41344A0A23466920502E728 /* if_iwxmld.h */,
 			);
 			path = hal_iwx;
 			sourceTree = "<group>";
@@ -925,8 +915,6 @@
 				F8D94CDB2B9ABFE20081A3C4 /* zutil.c in Sources */,
 				F8D94CDC2B9ABFE20081A3C4 /* ItlHalService.cpp in Sources */,
 				F8D94CDD2B9ABFE20081A3C4 /* ItlIwx.cpp in Sources */,
-				14BA3EB9CA00385AEA097AC1 /* ItlIwxMld.cpp in Sources */,
-				05CE876E5DD1273BACA2257F /* ItlIwxApi86.cpp in Sources */,
 				F8D94CED2B9ABFE20081A3C4 /* IOPCIEDeviceWrapper.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -995,8 +983,6 @@
 				F8D94CDB2B9ABFE20081A3C4 /* zutil.c in Sources */,
 				F8D94CDC2B9ABFE20081A3C4 /* ItlHalService.cpp in Sources */,
 				F8D94CDD2B9ABFE20081A3C4 /* ItlIwx.cpp in Sources */,
-				14BA3EB9CA00385AEA097AC1 /* ItlIwxMld.cpp in Sources */,
-				05CE876E5DD1273BACA2257F /* ItlIwxApi86.cpp in Sources */,
 				F8D94CED2B9ABFE20081A3C4 /* IOPCIEDeviceWrapper.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

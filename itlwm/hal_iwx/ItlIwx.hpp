@@ -124,7 +124,6 @@
 
 #include "if_iwxreg.h"
 #include "if_iwxvar.h"
-#include "if_iwxmld.h"
 #include <sys/pcireg.h>
 
 #include <IOKit/network/IOEthernetController.h>
@@ -413,7 +412,8 @@ public:
     int    iwx_umac_scan(struct iwx_softc *, int);
     int    iwx_umac_scan_v12(struct iwx_softc *, int);
     int    iwx_umac_scan_v14(struct iwx_softc *, int);
-    int    iwx_umac_scan_v17(struct iwx_softc *, int);
+    /* iwx_umac_scan_v17 (SCAN_REQ_UMAC v17, BE firmware only) was removed
+     * with the BE device support; the AX211 firmware advertises v14. */
     void    iwx_mcc_update(struct iwx_softc *, struct iwx_mcc_chub_notif *);
     uint8_t    iwx_ridx2rate(struct ieee80211_rateset *, int);
     int    iwx_rval2ridx(int);
@@ -459,17 +459,9 @@ public:
     int    iwx_p2p_roc(struct iwx_softc *, uint8_t, uint16_t);
     void   iwx_p2p_session_cmd(struct iwx_softc *, uint32_t, uint32_t);
     void   iwx_p2p_roc_event(struct iwx_softc *, uint32_t, uint32_t);
-    int    iwx_mld_p2p_setup(struct iwx_softc *, uint8_t);
-    int    iwx_mld_p2p_mac_cmd(struct iwx_softc *, uint32_t, bool);
-    int    iwx_mld_aux_sta_add(struct iwx_softc *);
-    int    iwx_mld_listener_setup(struct iwx_softc *);
     int    iwx_legacy_listener_setup(struct iwx_softc *);
     int    iwx_legacy_listener_mac(struct iwx_softc *, uint32_t, uint8_t, bool);
     void   iwx_awdl_listener_refit(struct iwx_softc *);
-    int    iwx_mld_listener_link(struct iwx_softc *, uint32_t, uint32_t, uint32_t);
-    int    iwx_mld_roc_cmd(struct iwx_softc *, uint32_t, uint32_t);
-    void   iwx_mld_roc_notif(struct iwx_softc *, struct iwx_rx_packet *);
-    void   iwx_mld_roc_block_emlsr(struct iwx_softc *);
 
     int    iwx_aux_roc_add_sta(struct iwx_softc *, uint8_t);
     void   iwx_aux_roc_rm_sta(struct iwx_softc *);
@@ -495,64 +487,14 @@ public:
     static int    iwx_set_key_hw(struct ieee80211com *, struct ieee80211_node *,
            struct ieee80211_key *);
     static void    iwx_setkey_task(void *);
-    static void    iwx_deferred_eapol_task(void *);
     static void    iwx_delete_key(struct ieee80211com *,
            struct ieee80211_node *, struct ieee80211_key *);
     int    iwx_media_change(struct _ifnet *);
     static void    iwx_newstate_task(void *);
-    static void    iwx_scan_task(void *);
     static int     iwx_defer_sae_join(struct ieee80211com *, const uint8_t *, int);
     static void    iwx_sae_join_task(void *);
-    void iwx_mld_modify_link_fill(iwx_softc *, iwx_node *, iwx_mld_link_config_cmd *, int, int);
-    int iwx_mld_mac_ctxt_cmd(iwx_softc *, iwx_node *, uint32_t, int);
-    int iwx_mld_add_link(iwx_softc *, iwx_node *, int);
-    int iwx_mld_add_sta_cmd(iwx_softc *, iwx_node *, int);
-    int iwx_mld_wait_sta_queues_empty(iwx_softc *, int);
-    int iwx_mld_remove_sta_queues(iwx_softc *);
-    int iwx_mld_remove_sta_keys(iwx_softc *, iwx_node *);
-    int iwx_mld_remove_link(iwx_softc *, iwx_node *, int);
-    int iwx_mld_rm_sta_cmd(iwx_softc *, iwx_node *);
-    void iwx_mld_rm_sta_local(iwx_softc *, iwx_node *);
-    int iwx_mld_auth(iwx_softc *);
-    int iwx_mld_run(iwx_softc *);
-    int iwx_mld_run_stop(iwx_softc *);
-    int iwx_mld_deauth(iwx_softc *);
-    int iwx_mld_set_key(iwx_softc *, ieee80211_node *, ieee80211_key *, int);
-    int iwx_mld_queue_cmd(iwx_softc *, uint32_t, int, int, uint32_t, uint64_t, uint64_t, uint16_t *, uint16_t *);
-    int iwx_mld_update_active_links(iwx_softc *, uint8_t, uint8_t, bool);
-    bool iwx_mld_associated_channels_valid(iwx_softc *);
-    bool iwx_mld_associated_channel_usable(iwx_softc *);
-#ifdef AIRPORT_WCL
-    uint8_t iwx_mld_select_links(iwx_softc *, uint8_t *, bool *);
-    void iwx_mld_apply_link_selection(iwx_softc *);
-    bool iwx_mld_mlo_scan(iwx_softc *);
-    void iwx_mld_mlo_scan_done(iwx_softc *);
-    int iwx_mld_request_periodic_stats(iwx_softc *, bool);
-    void iwx_mld_handle_stats_oper_notif(iwx_softc *, struct iwx_rx_packet *);
-    void iwx_mld_handle_beacon_filter_notif(iwx_softc *, struct iwx_rx_packet *);
-    void iwx_mld_emlsr_start(iwx_softc *);
-    void iwx_mld_emlsr_stop(iwx_softc *);
-    static void iwx_mld_exit_emlsr(iwx_softc *, int);
-    static void iwx_mld_note_emlsr_exit(iwx_softc *, int);
-
-    static void iwx_mld_tpt_timer(void *);
-    static void iwx_mld_tpt_task(void *);
-
-    static void iwx_ttlm_schedule(ieee80211com *);
-    static int iwx_ttlm_apply(ieee80211com *, uint16_t);
-#else
-    // Without WCL there is no MLO or EMLSR; the firmware-notification dispatch still names these, so they exist as no-ops.
-    void iwx_mld_handle_stats_oper_notif(iwx_softc *, struct iwx_rx_packet *);
-    void iwx_mld_handle_beacon_filter_notif(iwx_softc *, struct iwx_rx_packet *);
-    static void iwx_mld_exit_emlsr(iwx_softc *, int);
-    static void iwx_mld_note_emlsr_exit(iwx_softc *, int);
-    static void iwx_mld_tpt_timer(void *);
-    static void iwx_mld_tpt_task(void *);
-#endif
-    static void iwx_mld_schedule_active_links(iwx_softc *, uint8_t, uint8_t, bool, bool);
-    static void    iwx_mld_active_link_task(void *);
     static int    iwx_newstate(struct ieee80211com *, enum ieee80211_state, int);
-    void    iwx_endscan(struct iwx_softc *, uint8_t, bool = true);
+    void    iwx_endscan(struct iwx_softc *);
     void    iwx_fill_sf_command(struct iwx_softc *, struct iwx_sf_cfg_cmd *,
             struct ieee80211_node *);
     int    iwx_sf_config(struct iwx_softc *, int);
@@ -588,7 +530,6 @@ public:
             struct mbuf_list *);
     void    iwx_notif_intr(struct iwx_softc *);
     static int    iwx_intr(OSObject *object, IOInterruptEventSource* sender, int count);
-    static int    iwx_intr_msix(OSObject *object, IOInterruptEventSource* sender, int count);
     static int    iwx_match(IOPCIDevice *);
     int    iwx_preinit(struct iwx_softc *);
     void    iwx_attach_hook(struct device *);

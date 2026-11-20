@@ -61,8 +61,6 @@ jobs:
           repository: acidanthera/MacKernelSDK
           ref: 3f750085caa17ec3a7880f11c11bf4f48cd6a164
           path: MacKernelSDK
-      - name: Expose public Tahoe MSI-X API
-        run: python3 scripts/prepare_tahoe_sdk.py
       - name: Build Sequoia and Tahoe x86_64 kexts
         env:
           CONFIGURATION: ${{ inputs.configuration || 'Debug' }}

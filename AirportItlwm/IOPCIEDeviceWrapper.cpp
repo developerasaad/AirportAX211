@@ -72,18 +72,10 @@ probe(IOService *provider, SInt32 *score)
     }
     if (isMatch) {
         XYLog("%s Found\n", __FUNCTION__);
-#ifdef AIRPORT_WCL
-        if (IwxBE::pciFamily(device->configRead16(kIOPCIConfigDeviceID)) != IwxBE::None) {
-            IOReturn ret = device->configureInterrupts(kIOInterruptTypePCIMessagedX, 1, 1, 0);
-            if (ret != kIOReturnSuccess) {
-                XYLogE("BE MSI-X allocation failed: 0x%x\n", ret);
-                fHalService->release();
-                fHalService = NULL;
-                return NULL;
-            }
-        } else
-#endif
-        {
+        /* AX211 legacy MSI path for both WCL and non-WCL builds: find the
+         * MSI-X capability and DISABLE it, then enable single-vector MSI.
+         * (The BE configureInterrupts(kIOInterruptTypePCIMessagedX) branch
+         * was removed with the BE device support.) */
         device->findPCICapability(PCI_CAP_ID_MSIX, &msixCap);
         if (msixCap)
             pciMsiXClearAndSet(device, msixCap, PCI_MSIX_FLAGS_ENABLE, 0);
@@ -95,7 +87,6 @@ probe(IOService *provider, SInt32 *score)
             fHalService->release();
             fHalService = NULL;
             return NULL;
-        }
         }
         this->pciNub = device;
         return this;

@@ -196,36 +196,36 @@
 #define CSR_HW_RF_STEP(_val) (((_val) >> 8) & 0xF)
 
 struct iwx_rx_radiotap_header {
-	struct ieee80211_radiotap_header wr_ihdr;
-	uint64_t	wr_tsft;
-	uint8_t		wr_flags;
-	uint8_t		wr_rate;
-	uint16_t	wr_chan_freq;
-	uint16_t	wr_chan_flags;
-	int8_t		wr_dbm_antsignal;
-	int8_t		wr_dbm_antnoise;
+        struct ieee80211_radiotap_header wr_ihdr;
+        uint64_t        wr_tsft;
+        uint8_t         wr_flags;
+        uint8_t         wr_rate;
+        uint16_t        wr_chan_freq;
+        uint16_t        wr_chan_flags;
+        int8_t          wr_dbm_antsignal;
+        int8_t          wr_dbm_antnoise;
 } __packed;
 
-#define IWX_RX_RADIOTAP_PRESENT						\
-	((1 << IEEE80211_RADIOTAP_TSFT) |				\
-	 (1 << IEEE80211_RADIOTAP_FLAGS) |				\
-	 (1 << IEEE80211_RADIOTAP_RATE) |				\
-	 (1 << IEEE80211_RADIOTAP_CHANNEL) |				\
-	 (1 << IEEE80211_RADIOTAP_DBM_ANTSIGNAL) |			\
-	 (1 << IEEE80211_RADIOTAP_DBM_ANTNOISE))
+#define IWX_RX_RADIOTAP_PRESENT                                         \
+        ((1 << IEEE80211_RADIOTAP_TSFT) |                               \
+         (1 << IEEE80211_RADIOTAP_FLAGS) |                              \
+         (1 << IEEE80211_RADIOTAP_RATE) |                               \
+         (1 << IEEE80211_RADIOTAP_CHANNEL) |                            \
+         (1 << IEEE80211_RADIOTAP_DBM_ANTSIGNAL) |                      \
+         (1 << IEEE80211_RADIOTAP_DBM_ANTNOISE))
 
 struct iwx_tx_radiotap_header {
-	struct ieee80211_radiotap_header wt_ihdr;
-	uint8_t		wt_flags;
-	uint8_t		wt_rate;
-	uint16_t	wt_chan_freq;
-	uint16_t	wt_chan_flags;
+        struct ieee80211_radiotap_header wt_ihdr;
+        uint8_t         wt_flags;
+        uint8_t         wt_rate;
+        uint16_t        wt_chan_freq;
+        uint16_t        wt_chan_flags;
 } __packed;
 
-#define IWX_TX_RADIOTAP_PRESENT						\
-	((1 << IEEE80211_RADIOTAP_FLAGS) |				\
-	 (1 << IEEE80211_RADIOTAP_RATE) |				\
-	 (1 << IEEE80211_RADIOTAP_CHANNEL))
+#define IWX_TX_RADIOTAP_PRESENT                                         \
+        ((1 << IEEE80211_RADIOTAP_FLAGS) |                              \
+         (1 << IEEE80211_RADIOTAP_RATE) |                               \
+         (1 << IEEE80211_RADIOTAP_CHANNEL))
 
 /* BZ FM-92 contains 73 sections, including the CPU and paging separators. */
 #define IWX_UCODE_SECT_MAX 73
@@ -235,16 +235,16 @@ struct iwx_tx_radiotap_header {
  *
  * In addition to the following, status < 0 ==> -error
  */
-#define IWX_FW_STATUS_NONE		0
-#define IWX_FW_STATUS_INPROGRESS	1
-#define IWX_FW_STATUS_DONE		2
+#define IWX_FW_STATUS_NONE              0
+#define IWX_FW_STATUS_INPROGRESS        1
+#define IWX_FW_STATUS_DONE              2
 
 enum iwx_ucode_type {
-	IWX_UCODE_TYPE_REGULAR,
-	IWX_UCODE_TYPE_INIT,
-	IWX_UCODE_TYPE_WOW,
-	IWX_UCODE_TYPE_REGULAR_USNIFFER,
-	IWX_UCODE_TYPE_MAX
+        IWX_UCODE_TYPE_REGULAR,
+        IWX_UCODE_TYPE_INIT,
+        IWX_UCODE_TYPE_WOW,
+        IWX_UCODE_TYPE_REGULAR_USNIFFER,
+        IWX_UCODE_TYPE_MAX
 };
 
 struct iwx_fw_onesect {
@@ -260,63 +260,63 @@ struct iwx_fw_sects {
 };
 
 struct iwx_fw_info {
-	void *fw_rawdata;
-	size_t fw_rawsize;
+        void *fw_rawdata;
+        size_t fw_rawsize;
     void *pnvm_rawdata;
     size_t pnvm_rawsize;
-	int fw_status;
+        int fw_status;
 
-	struct iwx_fw_sects fw_sects[IWX_UCODE_TYPE_MAX];
+        struct iwx_fw_sects fw_sects[IWX_UCODE_TYPE_MAX];
 
-	/* FW debug data parsed for driver usage */
-	int dbg_dest_tlv_init;
-	uint8_t *dbg_dest_ver;
-	uint8_t n_dest_reg;
-	struct iwx_fw_dbg_dest_tlv_v1 *dbg_dest_tlv_v1;
+        /* FW debug data parsed for driver usage */
+        int dbg_dest_tlv_init;
+        uint8_t *dbg_dest_ver;
+        uint8_t n_dest_reg;
+        struct iwx_fw_dbg_dest_tlv_v1 *dbg_dest_tlv_v1;
 
-	struct iwx_fw_dbg_conf_tlv *dbg_conf_tlv[IWX_FW_DBG_CONF_MAX];
-	size_t dbg_conf_tlv_len[IWX_FW_DBG_CONF_MAX];
-	struct iwx_fw_dbg_trigger_tlv *dbg_trigger_tlv[IWX_FW_DBG_TRIGGER_MAX];
-	size_t dbg_trigger_tlv_len[IWX_FW_DBG_TRIGGER_MAX];
-	struct iwx_fw_dbg_mem_seg_tlv *dbg_mem_tlv;
-	size_t n_mem_tlv;
+        struct iwx_fw_dbg_conf_tlv *dbg_conf_tlv[IWX_FW_DBG_CONF_MAX];
+        size_t dbg_conf_tlv_len[IWX_FW_DBG_CONF_MAX];
+        struct iwx_fw_dbg_trigger_tlv *dbg_trigger_tlv[IWX_FW_DBG_TRIGGER_MAX];
+        size_t dbg_trigger_tlv_len[IWX_FW_DBG_TRIGGER_MAX];
+        struct iwx_fw_dbg_mem_seg_tlv *dbg_mem_tlv;
+        size_t n_mem_tlv;
 };
 
 struct iwx_nvm_data {
-	int n_hw_addrs;
-	uint8_t hw_addr[ETHER_ADDR_LEN];
+        int n_hw_addrs;
+        uint8_t hw_addr[ETHER_ADDR_LEN];
 
-	int sku_cap_band_24GHz_enable;
-	int sku_cap_band_52GHz_enable;
-	int sku_cap_11n_enable;
+        int sku_cap_band_24GHz_enable;
+        int sku_cap_band_52GHz_enable;
+        int sku_cap_11n_enable;
     int sku_cap_11ac_enable;
     int sku_cap_11ax_enable;
-	int sku_cap_amt_enable;
-	int sku_cap_ipan_enable;
-	int sku_cap_mimo_disable;
+        int sku_cap_amt_enable;
+        int sku_cap_ipan_enable;
+        int sku_cap_mimo_disable;
     int lar_enabled;
     bool vht160_supported;
 
-	uint8_t valid_tx_ant, valid_rx_ant;
+        uint8_t valid_tx_ant, valid_rx_ant;
 
-	uint16_t nvm_version;
+        uint16_t nvm_version;
 };
 
 /* max bufs per tfd the driver will use */
 #define IWX_MAX_CMD_TBS_PER_TFD 2
 
 struct iwx_host_cmd {
-	const void *data[IWX_MAX_CMD_TBS_PER_TFD];
-	struct iwx_rx_packet *resp_pkt;
-	size_t resp_pkt_len;
-	unsigned long _rx_page_addr;
-	uint32_t _rx_page_order;
-	int handler_status;
+        const void *data[IWX_MAX_CMD_TBS_PER_TFD];
+        struct iwx_rx_packet *resp_pkt;
+        size_t resp_pkt_len;
+        unsigned long _rx_page_addr;
+        uint32_t _rx_page_order;
+        int handler_status;
 
-	uint32_t flags;
-	uint16_t len[IWX_MAX_CMD_TBS_PER_TFD];
-	uint8_t dataflags[IWX_MAX_CMD_TBS_PER_TFD];
-	uint32_t id;
+        uint32_t flags;
+        uint16_t len[IWX_MAX_CMD_TBS_PER_TFD];
+        uint8_t dataflags[IWX_MAX_CMD_TBS_PER_TFD];
+        uint32_t id;
 };
 
 /*
@@ -327,7 +327,7 @@ struct iwx_dma_info {
 #ifdef AIRPORT_VTD
     ItlDmaBuffer mapping;
 #endif
-	IOBufferMemoryDescriptor* buffer;
+        IOBufferMemoryDescriptor* buffer;
     bus_addr_t        paddr;
     void             *vaddr;
     bus_size_t        size;
@@ -338,19 +338,19 @@ struct iwx_dma_info {
 #define IWX_TX_TRACE_COUNT 48
 /* One TX_CMD as it went to the ring: enough to tell which frame a firmware assert named by queue and index. */
 struct iwx_tx_trace {
-	uint16_t qid, idx;
-	uint8_t tid, fc0, fc1, ntbs;
-	uint16_t len, hdrlen;
-	uint32_t offload, flags, rate;
-	uint16_t tb[4];
-	uint8_t cross4g;
+        uint16_t qid, idx;
+        uint8_t tid, fc0, fc1, ntbs;
+        uint16_t len, hdrlen;
+        uint32_t offload, flags, rate;
+        uint16_t tb[4];
+        uint8_t cross4g;
 };
 
 struct iwx_tx_data {
-	bus_dmamap_t	map;
-	bus_addr_t	cmd_paddr;
-	mbuf_t m;
-	struct iwx_node *in;
+        bus_dmamap_t    map;
+        bus_addr_t      cmd_paddr;
+        mbuf_t m;
+        struct iwx_node *in;
     int flags;
 #define IWX_TXDATA_FLAG_CMD_IS_NARROW  0x01
 #define IWX_TXDATA_FLAG_CMD_PENDING    0x02
@@ -359,105 +359,105 @@ struct iwx_tx_data {
 };
 
 struct iwx_tx_ring {
-	struct iwx_dma_info	desc_dma;
-	struct iwx_dma_info	cmd_dma;
-	struct iwx_dma_info	bc_tbl;
-	struct iwx_tfh_tfd	*desc;
-	struct iwx_device_cmd	*cmd;
-	struct iwx_tx_data	data[IWX_MIN_256_BA_QUEUE_SIZE_GEN3];
+        struct iwx_dma_info     desc_dma;
+        struct iwx_dma_info     cmd_dma;
+        struct iwx_dma_info     bc_tbl;
+        struct iwx_tfh_tfd      *desc;
+        struct iwx_device_cmd   *cmd;
+        struct iwx_tx_data      data[IWX_MIN_256_BA_QUEUE_SIZE_GEN3];
     unsigned int    ring_count;
     unsigned int    hi_mark;
     unsigned int    low_mark;
-	int			qid;
-	int			queued;
-	int			cur;
-	int			tail;
+        int                     qid;
+        int                     queued;
+        int                     cur;
+        int                     tail;
 };
 
-#define IWX_RX_MQ_RING_COUNT	512
+#define IWX_RX_MQ_RING_COUNT    512
 /* Linux driver optionally uses 8k buffer */
-#define IWX_RBUF_SIZE		4096
+#define IWX_RBUF_SIZE           4096
 
 struct iwx_rx_data {
-	mbuf_t m;
-	bus_dmamap_t	map;
+        mbuf_t m;
+        bus_dmamap_t    map;
 };
 
 struct iwx_rx_ring {
-	struct iwx_dma_info	free_desc_dma;
-	struct iwx_dma_info	stat_dma;
-	struct iwx_dma_info	used_desc_dma;
-	void			*desc;
-	void	        *stat;
-	struct iwx_rx_data	data[IWX_RX_MQ_RING_COUNT];
-	int			cur;
-	bool			next_fragment;
+        struct iwx_dma_info     free_desc_dma;
+        struct iwx_dma_info     stat_dma;
+        struct iwx_dma_info     used_desc_dma;
+        void                    *desc;
+        void            *stat;
+        struct iwx_rx_data      data[IWX_RX_MQ_RING_COUNT];
+        int                     cur;
+        bool                    next_fragment;
 };
 
-#define IWX_FLAG_USE_ICT	0x01	/* using Interrupt Cause Table */
-#define IWX_FLAG_RFKILL		0x02	/* radio kill switch is set */
-#define IWX_FLAG_SCANNING	0x04	/* scan in progress */
-#define IWX_FLAG_MAC_ACTIVE	0x08	/* MAC context added to firmware */
-#define IWX_FLAG_BINDING_ACTIVE	0x10	/* MAC->PHY binding added to firmware */
-#define IWX_FLAG_STA_ACTIVE	0x20	/* AP added to firmware station table */
-#define IWX_FLAG_TE_ACTIVE	0x40	/* time event is scheduled */
-#define IWX_FLAG_HW_ERR		0x80	/* hardware error occurred */
-#define IWX_FLAG_SHUTDOWN	0x100	/* shutting down; new tasks forbidden */
-#define IWX_FLAG_BGSCAN		0x200	/* background scan in progress */
+#define IWX_FLAG_USE_ICT        0x01    /* using Interrupt Cause Table */
+#define IWX_FLAG_RFKILL         0x02    /* radio kill switch is set */
+#define IWX_FLAG_SCANNING       0x04    /* scan in progress */
+#define IWX_FLAG_MAC_ACTIVE     0x08    /* MAC context added to firmware */
+#define IWX_FLAG_BINDING_ACTIVE 0x10    /* MAC->PHY binding added to firmware */
+#define IWX_FLAG_STA_ACTIVE     0x20    /* AP added to firmware station table */
+#define IWX_FLAG_TE_ACTIVE      0x40    /* time event is scheduled */
+#define IWX_FLAG_HW_ERR         0x80    /* hardware error occurred */
+#define IWX_FLAG_SHUTDOWN       0x100   /* shutting down; new tasks forbidden */
+#define IWX_FLAG_BGSCAN         0x200   /* background scan in progress */
 #define IWX_FLAG_TXFLUSH    0x400   /* Tx queue flushing in progress */
 #define IWX_FLAG_SCAN_ABORTING 0x800 /* scan completion is owned by abort */
 
 struct iwx_ucode_status {
-	uint32_t uc_lmac_error_event_table[2];
-	uint32_t uc_umac_error_event_table;
-	uint32_t uc_log_event_table;
-	unsigned int error_event_table_tlv_status;
+        uint32_t uc_lmac_error_event_table[2];
+        uint32_t uc_umac_error_event_table;
+        uint32_t uc_log_event_table;
+        unsigned int error_event_table_tlv_status;
 
-	int uc_ok;
-	int uc_intr;
+        int uc_ok;
+        int uc_intr;
 };
 
-#define IWX_ERROR_EVENT_TABLE_LMAC1	(1 << 0)
-#define IWX_ERROR_EVENT_TABLE_LMAC2	(1 << 1)
-#define IWX_ERROR_EVENT_TABLE_UMAC	(1 << 2)
+#define IWX_ERROR_EVENT_TABLE_LMAC1     (1 << 0)
+#define IWX_ERROR_EVENT_TABLE_LMAC2     (1 << 1)
+#define IWX_ERROR_EVENT_TABLE_UMAC      (1 << 2)
 
 #define IWX_CMD_RESP_MAX PAGE_SIZE
 
 /* lower blocks contain EEPROM image and calibration data */
-#define IWX_OTP_LOW_IMAGE_SIZE_FAMILY_7000 	16384
-#define IWX_OTP_LOW_IMAGE_SIZE_FAMILY_8000	32768
+#define IWX_OTP_LOW_IMAGE_SIZE_FAMILY_7000      16384
+#define IWX_OTP_LOW_IMAGE_SIZE_FAMILY_8000      32768
 
 #define IWX_TE_SESSION_PROTECTION_MAX_TIME_MS 1000
 #define IWX_TE_SESSION_PROTECTION_MIN_TIME_MS 400
 
 enum IWX_CMD_MODE {
-	IWX_CMD_ASYNC		= (1 << 0),
-	IWX_CMD_WANT_RESP	= (1 << 1),
-	IWX_CMD_SEND_IN_RFKILL	= (1 << 2),
+        IWX_CMD_ASYNC           = (1 << 0),
+        IWX_CMD_WANT_RESP       = (1 << 1),
+        IWX_CMD_SEND_IN_RFKILL  = (1 << 2),
 };
 enum iwx_hcmd_dataflag {
-	IWX_HCMD_DFL_NOCOPY     = (1 << 0),
-	IWX_HCMD_DFL_DUP        = (1 << 1),
+        IWX_HCMD_DFL_NOCOPY     = (1 << 0),
+        IWX_HCMD_DFL_DUP        = (1 << 1),
 };
 
-#define IWX_NUM_PAPD_CH_GROUPS	9
-#define IWX_NUM_TXP_CH_GROUPS	9
+#define IWX_NUM_PAPD_CH_GROUPS  9
+#define IWX_NUM_TXP_CH_GROUPS   9
 
 struct iwx_phy_ctxt {
-	uint16_t id;
-	uint16_t color;
-	uint32_t ref;
-	struct ieee80211_channel *channel;
-	uint16_t mld_center_freq;
-	uint8_t mld_width;
-	uint8_t mld_config_valid;
+        uint16_t id;
+        uint16_t color;
+        uint32_t ref;
+        struct ieee80211_channel *channel;
+        uint16_t mld_center_freq;
+        uint8_t mld_width;
+        uint8_t mld_config_valid;
 };
 
 struct iwx_bf_data {
-	int bf_enabled;		/* filtering	*/
-	int ba_enabled;		/* abort	*/
-	int ave_beacon_signal;
-	int last_cqm_event;
+        int bf_enabled;         /* filtering    */
+        int ba_enabled;         /* abort        */
+        int ave_beacon_signal;
+        int last_cqm_event;
 };
 
 /**
@@ -469,11 +469,11 @@ struct iwx_bf_data {
  * @paging_cnt: number of paging sections needed by fw image
  */
 struct iwx_self_init_dram {
-	struct iwx_dma_info *fw;
-	int lmac_cnt;
+        struct iwx_dma_info *fw;
+        int lmac_cnt;
     int umac_cnt;
-	struct iwx_dma_info *paging;
-	int paging_cnt;
+        struct iwx_dma_info *paging;
+        int paging_cnt;
 };
 
 
@@ -629,54 +629,53 @@ struct iwx_diagnostic {
 #endif
 
 struct iwx_setkey_arg {
-	struct ieee80211_node *ni;
-	struct ieee80211_key *k;
+        struct ieee80211_node *ni;
+        struct ieee80211_key *k;
 };
 #define IWX_SETKEY_NKEYS 4
 #define IWX_AWDL_KEY_SLOTS 32
 
 struct iwx_awdl_key {
-	struct ieee80211_key key;
-	uint8_t addr[IEEE80211_ADDR_LEN];
-	uint8_t flags;
-	uint8_t valid;
+        struct ieee80211_key key;
+        uint8_t addr[IEEE80211_ADDR_LEN];
+        uint8_t flags;
+        uint8_t valid;
 };
 
-#include "iwx_be_config.h"
+/* (iwx_be_config.h was removed with the BE/MSI-X device support: this
+ * driver supports only the AX211, PCI 8086:51f0 family, so-a0-gf-a0.) */
 
 struct iwx_softc {
-	struct device sc_dev;
-	struct ieee80211com sc_ic;
-	int (*sc_newstate)(struct ieee80211com *, enum ieee80211_state, int);
-	int sc_newstate_pending;
+        struct device sc_dev;
+        struct ieee80211com sc_ic;
+        int (*sc_newstate)(struct ieee80211com *, enum ieee80211_state, int);
+        int sc_newstate_pending;
     pci_intr_handle_t ih;
 
-	struct task		init_task; /* NB: not reference-counted */
-	struct task		mcc_task;
-	/* Keys the firmware programs are queued; net80211 retries on EBUSY. */
-	struct iwx_setkey_arg sc_setkey_arg[IWX_SETKEY_NKEYS];
-	unsigned sc_setkey_cur, sc_setkey_tail, sc_setkey_nkeys;
-	unsigned sc_setkey_epoch;	/* bumped by every queue reset */
-	struct task sc_setkey_task;
-//	struct refcnt		task_refs;
-	struct task newstate_task;
-	struct task start_task;
-	struct task mld_link_task;
-	struct task sc_scan_task;
-	struct task sc_sae_join_task;
-	uint8_t sc_sae_join_bssid[IEEE80211_ADDR_LEN];
-	uint32_t sc_sae_join_generation;
-	uint32_t sc_sae_join_device_generation;
-	uint32_t sc_sae_join_scan_generation;
-	uint32_t sc_sae_join_password_generation;
-	int sc_sae_join_state;
-	int sc_sae_join_force_reauth;
-	int sc_sae_join_pending;
-	enum ieee80211_state	ns_nstate;
-	int			ns_arg;
+        struct task             init_task; /* NB: not reference-counted */
+        struct task             mcc_task;
+        /* Keys the firmware programs are queued; net80211 retries on EBUSY. */
+        struct iwx_setkey_arg sc_setkey_arg[IWX_SETKEY_NKEYS];
+        unsigned sc_setkey_cur, sc_setkey_tail, sc_setkey_nkeys;
+        unsigned sc_setkey_epoch;       /* bumped by every queue reset */
+        struct task sc_setkey_task;
+//      struct refcnt           task_refs;
+        struct task newstate_task;
+        struct task start_task;
+        struct task sc_sae_join_task;
+        uint8_t sc_sae_join_bssid[IEEE80211_ADDR_LEN];
+        uint32_t sc_sae_join_generation;
+        uint32_t sc_sae_join_device_generation;
+        uint32_t sc_sae_join_scan_generation;
+        uint32_t sc_sae_join_password_generation;
+        int sc_sae_join_state;
+        int sc_sae_join_force_reauth;
+        int sc_sae_join_pending;
+        enum ieee80211_state    ns_nstate;
+        int                     ns_arg;
 
-	/* Task for firmware BlockAck setup/teardown and its arguments. */
-	struct task	ba_task;
+        /* Task for firmware BlockAck setup/teardown and its arguments. */
+        struct task     ba_task;
     
     struct iwx_ba_task_data    ba_rx;
     struct iwx_ba_task_data    ba_tx;
@@ -687,45 +686,44 @@ struct iwx_softc {
     struct task        mac_ctxt_task;
     struct task        chan_ctxt_task;
 
-	bus_space_tag_t sc_st;
-	bus_space_handle_t sc_sh;
-	bus_size_t sc_sz;
-	bus_dma_tag_t sc_dmat;
-	pci_chipset_tag_t sc_pct;
-	pcitag_t sc_pcitag;
-	IOInterruptEventSource *sc_ih;
-	int sc_msix;
+        bus_space_tag_t sc_st;
+        bus_space_handle_t sc_sh;
+        bus_size_t sc_sz;
+        bus_dma_tag_t sc_dmat;
+        pci_chipset_tag_t sc_pct;
+        pcitag_t sc_pcitag;
+        IOInterruptEventSource *sc_ih;
 
-	/* TX/RX rings. */
-	struct iwx_tx_ring txq[IWX_MAX_TVQM_QUEUES];
-	struct iwx_rx_ring rxq;
-	ItlQueueMask<IWX_MAX_TVQM_QUEUES> qfullmsk;
+        /* TX/RX rings. */
+        struct iwx_tx_ring txq[IWX_MAX_TVQM_QUEUES];
+        struct iwx_rx_ring rxq;
+        ItlQueueMask<IWX_MAX_TVQM_QUEUES> qfullmsk;
     struct iwx_tx_ring sc_tvqm_ring;
     int first_data_qid;
 
-	int sc_sf_state;
+        int sc_sf_state;
 
-	/* ICT table. */
-	struct iwx_dma_info	ict_dma;
-	int			ict_cur;
+        /* ICT table. */
+        struct iwx_dma_info     ict_dma;
+        int                     ict_cur;
     uint32_t sku_id[3];
 
-	int sc_hw_rev;
-#define IWX_SILICON_A_STEP	0
-#define IWX_SILICON_B_STEP	1
-#define IWX_SILICON_C_STEP	2
-#define IWX_SILICON_D_STEP	3
+        int sc_hw_rev;
+#define IWX_SILICON_A_STEP      0
+#define IWX_SILICON_B_STEP      1
+#define IWX_SILICON_C_STEP      2
+#define IWX_SILICON_D_STEP      3
     int sc_hw_rf_id;
-	int sc_hw_id;
+        int sc_hw_id;
     const struct iwl_cfg_trans_params *sc_cfg_params;
     const struct iwl_cfg *sc_cfg;
-	int sc_device_family;
-#define IWX_DEVICE_FAMILY_22000	1
-#define IWX_DEVICE_FAMILY_AX210	2
-#define IWX_DEVICE_FAMILY_BZ	3
+        int sc_device_family;
+#define IWX_DEVICE_FAMILY_22000 1
+#define IWX_DEVICE_FAMILY_AX210 2
+#define IWX_DEVICE_FAMILY_BZ    3
 
-	struct iwx_dma_info ctxt_info_dma;
-	struct iwx_self_init_dram init_dram;
+        struct iwx_dma_info ctxt_info_dma;
+        struct iwx_self_init_dram init_dram;
     /* For gen3 */
     struct iwx_dma_info prph_scratch_dma;
     struct iwx_dma_info prph_info_dma;
@@ -735,60 +733,28 @@ struct iwx_softc {
     int pnvm_seg_count;
     uint32_t sc_pnvm_status;
     uint32_t sc_pnvm_payload_len;
-    int sc_use_mld_api;
-    uint8_t sc_mld_link_active;
-    uint8_t sc_mld_phy_active;
-    uint8_t sc_mld_mac_associated;
-	uint8_t sc_mld_active_links;
-	uint8_t sc_mld_primary_link;
-	uint8_t sc_mld_emlsr_active;
-	uint8_t sc_mld_pending_links;
-	uint8_t sc_mld_pending_primary_link;
-	uint8_t sc_mld_pending_emlsr;
-	uint8_t sc_mld_pending_soft;
-	uint8_t sc_mld_link_update_pending;
-	uint8_t sc_mld_disconnect_pending;
-	int sc_mld_pending_generation;
-    uint16_t sc_mld_txq_tidmask;
-    uint32_t sc_mld_local_teardown;
-    uint8_t sc_mld_sta_ids[IWX_MLD_MAX_LINKS];
-    uint32_t sc_mld_sta_mask;
-	uint32_t sc_mld_active_sta_mask;
-	/* EMLSR policy, see ItlIwxMld.cpp */
-	CTimeout *sc_mld_tpt_timer;
-	struct task mld_tpt_task;
-	uint8_t sc_mld_emlsr_enabled;
-	uint8_t sc_mld_emlsr_blocked;
-	uint8_t sc_mld_emlsr_exit_reason;
-	uint8_t sc_mld_emlsr_exit_repeat;
-	uint8_t sc_mld_retry_ticks;
-	uint32_t sc_mld_task_flags;
-	uint32_t sc_mld_emlsr_last_exit;
-	uint32_t sc_mld_emlsr_prevent_until;
-	uint32_t sc_mld_mlo_scan_time;
-	uint32_t sc_mld_tpt_tx, sc_mld_tpt_rx;
-	uint32_t sc_mld_phy_load[IWX_NUM_PHY_CTX];
-	uint32_t sc_mld_phy_load_by_us[IWX_NUM_PHY_CTX];
-	uint8_t sc_mld_link_energy[IWX_MLD_MAX_LINKS];
+    /* The MLD (BE) softc state (sc_mld_* links/stations/EMLSR fields,
+     * mld_link_task, mld_tpt_task, sc_mld_tpt_timer) was removed with the
+     * BE device support: the AX211 firmware has no MLD ABI. */
 
-	int sc_fw_chunk_done;
-	int sc_init_complete;
-#define IWX_INIT_COMPLETE	0x01
-#define IWX_CALIB_COMPLETE	0x02
+    int sc_fw_chunk_done;
+        int sc_init_complete;
+#define IWX_INIT_COMPLETE       0x01
+#define IWX_CALIB_COMPLETE      0x02
 #define IWX_PNVM_COMPLETE    0x04
 
-	struct iwx_ucode_status sc_uc;
-	char sc_fwver[32];
+        struct iwx_ucode_status sc_uc;
+        char sc_fwver[32];
 
-	int sc_capaflags;
-	int sc_capa_max_probe_len;
-	int sc_capa_n_scan_channels;
+        int sc_capaflags;
+        int sc_capa_max_probe_len;
+        int sc_capa_n_scan_channels;
     int sc_capa_num_stations;
-	uint8_t sc_ucode_api[howmany(IWX_NUM_UCODE_TLV_API, NBBY)];
-	uint8_t sc_enabled_capa[howmany(IWX_NUM_UCODE_TLV_CAPA, NBBY)];
-#define IWX_MAX_FW_CMD_VERSIONS	800
-	struct iwx_fw_cmd_version cmd_versions[IWX_MAX_FW_CMD_VERSIONS];
-	int n_cmd_versions;
+        uint8_t sc_ucode_api[howmany(IWX_NUM_UCODE_TLV_API, NBBY)];
+        uint8_t sc_enabled_capa[howmany(IWX_NUM_UCODE_TLV_CAPA, NBBY)];
+#define IWX_MAX_FW_CMD_VERSIONS 800
+        struct iwx_fw_cmd_version cmd_versions[IWX_MAX_FW_CMD_VERSIONS];
+        int n_cmd_versions;
     char sc_fw_mcc[3];
     uint16_t sc_fw_mcc_int;
     char sc_mcc_last[3];
@@ -807,188 +773,179 @@ struct iwx_softc {
     uint32_t sc_iml_len;
     uint8_t sc_iml[IWX_IML_MAX_LEN];
 
-	int sc_intmask;
-	int sc_flags;
-	uint32_t sc_scan_generation;
-	uint32_t sc_scan_task_generation;
-	int sc_scan_task_device_generation;
-	uint16_t sc_scan_next_channel;
-	uint8_t sc_scan_batch;
-	uint8_t sc_scan_active;
-	uint8_t sc_scan_batch_pending;
-	uint8_t sc_scan_batch_sent;
-	uint8_t sc_scan_bgscan;
-	uint8_t sc_scan_mlo;	/* background scan of the other MLD links only */
-	uint8_t sc_scan_mlo_chans[howmany(IEEE80211_CHAN_MAX + 1, NBBY)];
+        int sc_intmask;
+        int sc_flags;
+        /* Scan state: the generation counter (SAE join re-validation) and
+         * the WCL scan-request bookkeeping below are used by the
+         * SCAN_REQ_UMAC v14 path. The v17 batch-scan continuation state
+         * (sc_scan_task, sc_scan_task_generation,
+         * sc_scan_task_device_generation, sc_scan_next_channel,
+         * sc_scan_batch, sc_scan_active, sc_scan_batch_pending,
+         * sc_scan_batch_sent, sc_scan_bgscan, sc_scan_mlo,
+         * sc_scan_mlo_chans) was removed with the BE device support. */
+        uint32_t sc_scan_generation;
 
-	uint8_t sc_scan_wcl_owned;
-	uint8_t sc_scan_wcl_join;
-	uint32_t sc_scan_unrestricted_fallback;
+        uint8_t sc_scan_wcl_owned;
+        uint8_t sc_scan_wcl_join;
+        uint32_t sc_scan_unrestricted_fallback;
 
-	uint32_t sc_fh_init_mask;
-	uint32_t sc_hw_init_mask;
-	uint32_t sc_fh_mask;
-	uint32_t sc_hw_mask;
-
-	int sc_generation;
+        int sc_generation;
     uint64_t sc_rx_service_cookie;
-	/* Which gate refused the last command; 0 means it was handed to the ring. */
-	uint8_t sc_cmd_error_stage;
-	uint8_t sc_driver_ready;
-	uint8_t sc_mcc_notify_pending;
-	/* A scan was refused because the LAR domain had not arrived yet. */
-	uint8_t sc_scan_lar_deferred;
-	uint32_t sc_fw_error_count;
-	int sc_hw_err_final;		/* a HW_ERR that must not be restarted from (critical temperature) */
-	uint32_t sc_hw_err_restarts[4];	/* uptime seconds of the last restarts after HW_ERR, newest last */
-	uint32_t sc_rx_frag_count, sc_rx_frag_first_rbid, sc_rx_bad_rbid;
+        /* Which gate refused the last command; 0 means it was handed to the ring. */
+        uint8_t sc_cmd_error_stage;
+        uint8_t sc_driver_ready;
+        uint8_t sc_mcc_notify_pending;
+        /* A scan was refused because the LAR domain had not arrived yet. */
+        uint8_t sc_scan_lar_deferred;
+        uint32_t sc_fw_error_count;
+        int sc_hw_err_final;            /* a HW_ERR that must not be restarted from (critical temperature) */
+        uint32_t sc_hw_err_restarts[4]; /* uptime seconds of the last restarts after HW_ERR, newest last */
+        uint32_t sc_rx_frag_count, sc_rx_frag_first_rbid, sc_rx_bad_rbid;
 #ifdef AIRPORT_WCL
     volatile uint32_t sc_diagnostic_sequence;
     struct iwx_diagnostic sc_diagnostics[32];
 #endif
 
-//	struct rwlock ioctl_rwl;
+//      struct rwlock ioctl_rwl;
 
-	int sc_cap_off; /* PCIe caps */
+        int sc_cap_off; /* PCIe caps */
 
-	const char *sc_fwname;
-    IwxBE::Selection sc_be;
+        const char *sc_fwname;
     unsigned sc_fw_api;
-	struct iwx_fw_info sc_fw;
-	struct iwx_dma_info fw_mon;
-	int sc_fw_phy_config;
-	struct iwx_tlv_calib_ctrl sc_default_calib[IWX_UCODE_TYPE_MAX];
+        struct iwx_fw_info sc_fw;
+        struct iwx_dma_info fw_mon;
+        int sc_fw_phy_config;
+        struct iwx_tlv_calib_ctrl sc_default_calib[IWX_UCODE_TYPE_MAX];
 
-	struct iwx_nvm_data sc_nvm;
-	struct iwx_bf_data sc_bf;
+        struct iwx_nvm_data sc_nvm;
+        struct iwx_bf_data sc_bf;
 
-	int sc_tx_timer[IWX_MAX_TVQM_QUEUES];
-	struct iwx_tx_trace sc_tx_trace[IWX_TX_TRACE_COUNT];	/* last TX commands, published when the firmware asserts */
-	uint32_t sc_tx_trace_next;
-	uint8_t sc_tlc_req[96];		/* the last TLC_MNG_CONFIG_CMD as sent */
-	uint8_t sc_tlc_req_len, sc_tlc_req_ver;
-	int sc_tx_progress;		/* a TX ring was reclaimed since the last watchdog tick */
-	int sc_rx_ba_sessions;
+        int sc_tx_timer[IWX_MAX_TVQM_QUEUES];
+        struct iwx_tx_trace sc_tx_trace[IWX_TX_TRACE_COUNT];    /* last TX commands, published when the firmware asserts */
+        uint32_t sc_tx_trace_next;
+        uint8_t sc_tlc_req[96];         /* the last TLC_MNG_CONFIG_CMD as sent */
+        uint8_t sc_tlc_req_len, sc_tlc_req_ver;
+        int sc_tx_progress;             /* a TX ring was reclaimed since the last watchdog tick */
+        int sc_rx_ba_sessions;
 
-	int sc_scan_last_antenna;
+        int sc_scan_last_antenna;
 
-	int sc_fixed_ridx;
+        int sc_fixed_ridx;
     
     uint8_t sc_mgmt_last_antenna_idx; /* for MGMT frames using*/
 
-	int sc_staid;
-	int sc_nodecolor;
+        int sc_staid;
+        int sc_nodecolor;
 
-	uint8_t *sc_cmd_resp_pkt[IWX_TFD_QUEUE_SIZE_MAX_GEN3];	
-	size_t sc_cmd_resp_len[IWX_TFD_QUEUE_SIZE_MAX_GEN3];
-	int sc_nic_locks;
+        uint8_t *sc_cmd_resp_pkt[IWX_TFD_QUEUE_SIZE_MAX_GEN3];  
+        size_t sc_cmd_resp_len[IWX_TFD_QUEUE_SIZE_MAX_GEN3];
+        int sc_nic_locks;
 
-	struct taskq *sc_nswq;
+        struct taskq *sc_nswq;
 
-	struct iwx_rx_phy_info sc_last_phy_info;
+        struct iwx_rx_phy_info sc_last_phy_info;
     int sc_ampdu_ref;
 #define IWX_MAX_BAID    32
     struct iwx_rxba_data sc_rxba_data[IWX_MAX_BAID];
 
-	uint32_t sc_time_event_uid;
-	/* AWDL listen: a one-channel passive scan with its own uid. */
-	int sc_awdl_listen_active;
-	uint32_t sc_awdl_listen_count;
-	uint32_t sc_awdl_listen_fail;
-	/* Aux ROC (HOT_SPOT_CMD) state for the AWDL listen. */
-	int sc_aux_roc_pending;		/* sent, response not seen yet */
-	int sc_aux_roc_running;		/* between TE START and END */
-	int sc_aux_roc_sta;		/* aux station added for the ROC (ADD_STA v12+) */
-	uint32_t sc_aux_roc_sta_err;
-	uint32_t sc_aux_roc_sta_stage;	/* 1 ADD_STA send, 2 ADD_STA status, 3 txq */
-	uint32_t sc_aux_roc_sta_code;	/* errno or ADD_STA status of the last failure */
-	int sc_aux_roc_qid;		/* firmware-assigned aux tx queue */
-	/* P2P Device listen (-itlawdlp2p): objects that exist in the firmware. */
-	int sc_p2p_mac;
-	int sc_p2p_promisc;	/* IN_PROMISC currently set on the P2P MAC */
-	int sc_p2p_bound;
-	int sc_p2p_sta;
-	int sc_p2p_queue;
-	uint8_t sc_p2p_roc_chan;	/* channel of the pending/running P2P ROC (MLD API) */
-	uint32_t sc_mld_roc_last;	/* uptime in seconds of the last P2P ROC request */
+        uint32_t sc_time_event_uid;
+        /* AWDL listen: a one-channel passive scan with its own uid. */
+        int sc_awdl_listen_active;
+        uint32_t sc_awdl_listen_count;
+        uint32_t sc_awdl_listen_fail;
+        /* Aux ROC (HOT_SPOT_CMD) state for the AWDL listen. */
+        int sc_aux_roc_pending;         /* sent, response not seen yet */
+        int sc_aux_roc_running;         /* between TE START and END */
+        int sc_aux_roc_sta;             /* aux station added for the ROC (ADD_STA v12+) */
+        uint32_t sc_aux_roc_sta_err;
+        uint32_t sc_aux_roc_sta_stage;  /* 1 ADD_STA send, 2 ADD_STA status, 3 txq */
+        uint32_t sc_aux_roc_sta_code;   /* errno or ADD_STA status of the last failure */
+        int sc_aux_roc_qid;             /* firmware-assigned aux tx queue */
+        /* P2P Device listen (-itlawdlp2p): objects that exist in the firmware. */
+        int sc_p2p_mac;
+        int sc_p2p_promisc;     /* IN_PROMISC currently set on the P2P MAC */
+        int sc_p2p_bound;
+        int sc_p2p_sta;
+        int sc_p2p_queue;
+        uint8_t sc_p2p_roc_chan;        /* channel of the pending/running P2P ROC (legacy session-protection path) */
 
-	uint32_t sc_p2p_addr_gen;	/* ic_awdl_addr_gen the P2P MAC was programmed with */
-	uint32_t sc_p2p_addr_changes;
-	uint32_t sc_p2p_wait;		/* listen attempts refused while waiting */
-	uint64_t sc_p2p_req_us;
-	uint64_t sc_p2p_start_us;
-	/* SESSION_PROTECTION_NOTIF for MAC 1, by (start, status). */
-	uint32_t sc_p2p_start_fail;
-	uint32_t sc_p2p_end_fail;
-	uint32_t sc_p2p_end_fail_short;	/* status 0 end within 90% of the dwell */
-	uint32_t sc_p2p_dwell_tu;
-	uint32_t sc_p2p_chan_changes;	/* PHY moved to another channel */
-	uint32_t sc_p2p_band_changes;	/* ... across bands (unbind, REMOVE, ADD, bind) */
-	uint32_t sc_aux_roc_apply_gp2;	/* GP2 when the ROC was requested */
-	uint32_t sc_aux_roc_start_gp2;	/* GP2 of the TE START notification */
-	uint32_t sc_aux_roc_uid;
-	uint32_t sc_aux_roc_sent;
-	uint32_t sc_aux_roc_resp_err;
-	uint32_t sc_aux_roc_started;
-	uint8_t sc_listener_up;	/* the LISTENER MAC, link, station and queue exist and are active */
-	uint8_t sc_listener_chan;
-	uint32_t sc_listener_bi;	/* beacon interval of the listener link, fixed while it exists */
-	/* -itlawdllegacyba: a firmware receive Block Ack session for the AWDL peer on pre-MLD firmware. */
-	uint8_t sc_legacy_ba_peer[ETHER_ADDR_LEN];
-	uint8_t sc_legacy_ba_peer_added, sc_legacy_ba_remove;
-	uint16_t sc_legacy_ba_tids;		/* TIDs with an open session */
-	int sc_legacy_ba_quarantine;		/* generation in which a command failed; no more attempts in it */
-	uint8_t sc_legacy_ba_stage;
-	uint32_t sc_legacy_ba_addsta_status, sc_legacy_ba_ba_status;
-	uint32_t sc_legacy_ba_sessions, sc_legacy_ba_refused, sc_legacy_ba_removed;
-	uint8_t sc_listener_width;     /* MHz, 20 or 80 (legacy listener only) */
-	struct task sc_awdl_peer_task;
-	struct iwx_awdl_key sc_awdl_keys[IWX_AWDL_KEY_SLOTS];
-	uint32_t sc_awdl_encryption_type;
-	uint8_t sc_awdl_low_latency;
-	uint8_t sc_awdl_peer_addr[IEEE80211_ADDR_LEN];
-	uint8_t sc_awdl_peer_target[IEEE80211_ADDR_LEN];
-	int sc_awdl_peer_qid;       /* QoS unicast data, TID 0 */
-	int sc_awdl_peer_llw_qid;   /* low-latency unicast data, TID 6 */
-	int sc_awdl_peer_mgmt_qid;  /* management/action frames, TID 15 */
-	int sc_awdl_listener_data_qid; /* group data, listener STA TID 0 */
-	int sc_awdl_listener_llw_qid; /* LLW multicast, listener STA TID 6 */
-	int sc_awdl_peer_error;
-	uint8_t sc_awdl_peer_added;
-	uint8_t sc_awdl_peer_busy;
-	uint8_t sc_awdl_peer_tlc_configured;
-	uint16_t sc_awdl_peer_tx_seq;
-	uint16_t sc_awdl_peer_llw_tx_seq;
-	uint8_t sc_awdl_ba_pending;
-	uint8_t sc_awdl_ba_tid;
-	uint8_t sc_awdl_ba_start;
-	uint16_t sc_awdl_ba_ssn;
-	uint16_t sc_awdl_ba_winsize;
-	uint8_t sc_awdl_ba_peer[IEEE80211_ADDR_LEN];
-	int sc_awdl_ba_error;
-	uint8_t sc_awdl_ba_reply[sizeof(struct ieee80211_frame) + 9];
-	uint8_t sc_awdl_ba_reply_pending;
-	uint8_t sc_awdl_ba_reply_chan;
-	uint8_t sc_awdl_rate_step;     /* data-frame rate ladder on the legacy listener, 0 = 54 Mbit/s OFDM */
-	uint16_t sc_awdl_rate_ok, sc_awdl_rate_fail;
-	uint8_t sc_listener_tries;
-	struct iwx_phy_ctxt sc_listener_phy;
-	uint8_t sc_awdl_mc_variant;	/* multicast filter variant active during this listen (0 = station's) */
-	uint32_t sc_awdl_mc_roc_count;
-	uint32_t sc_aux_roc_ended;
-	uint32_t sc_aux_roc_not_sched;
+        uint32_t sc_p2p_addr_gen;       /* ic_awdl_addr_gen the P2P MAC was programmed with */
+        uint32_t sc_p2p_addr_changes;
+        uint32_t sc_p2p_wait;           /* listen attempts refused while waiting */
+        uint64_t sc_p2p_req_us;
+        uint64_t sc_p2p_start_us;
+        /* SESSION_PROTECTION_NOTIF for MAC 1, by (start, status). */
+        uint32_t sc_p2p_start_fail;
+        uint32_t sc_p2p_end_fail;
+        uint32_t sc_p2p_end_fail_short; /* status 0 end within 90% of the dwell */
+        uint32_t sc_p2p_dwell_tu;
+        uint32_t sc_p2p_chan_changes;   /* PHY moved to another channel */
+        uint32_t sc_p2p_band_changes;   /* ... across bands (unbind, REMOVE, ADD, bind) */
+        uint32_t sc_aux_roc_apply_gp2;  /* GP2 when the ROC was requested */
+        uint32_t sc_aux_roc_start_gp2;  /* GP2 of the TE START notification */
+        uint32_t sc_aux_roc_uid;
+        uint32_t sc_aux_roc_sent;
+        uint32_t sc_aux_roc_resp_err;
+        uint32_t sc_aux_roc_started;
+        uint8_t sc_listener_up; /* the LISTENER MAC, link, station and queue exist and are active */
+        uint8_t sc_listener_chan;
+        uint32_t sc_listener_bi;        /* beacon interval of the listener link, fixed while it exists */
+        /* -itlawdllegacyba: a firmware receive Block Ack session for the AWDL peer on pre-MLD firmware. */
+        uint8_t sc_legacy_ba_peer[ETHER_ADDR_LEN];
+        uint8_t sc_legacy_ba_peer_added, sc_legacy_ba_remove;
+        uint16_t sc_legacy_ba_tids;             /* TIDs with an open session */
+        int sc_legacy_ba_quarantine;            /* generation in which a command failed; no more attempts in it */
+        uint8_t sc_legacy_ba_stage;
+        uint32_t sc_legacy_ba_addsta_status, sc_legacy_ba_ba_status;
+        uint32_t sc_legacy_ba_sessions, sc_legacy_ba_refused, sc_legacy_ba_removed;
+        uint8_t sc_listener_width;     /* MHz, 20 or 80 (legacy listener only) */
+        struct task sc_awdl_peer_task;
+        struct iwx_awdl_key sc_awdl_keys[IWX_AWDL_KEY_SLOTS];
+        uint32_t sc_awdl_encryption_type;
+        uint8_t sc_awdl_low_latency;
+        uint8_t sc_awdl_peer_addr[IEEE80211_ADDR_LEN];
+        uint8_t sc_awdl_peer_target[IEEE80211_ADDR_LEN];
+        int sc_awdl_peer_qid;       /* QoS unicast data, TID 0 */
+        int sc_awdl_peer_llw_qid;   /* low-latency unicast data, TID 6 */
+        int sc_awdl_peer_mgmt_qid;  /* management/action frames, TID 15 */
+        int sc_awdl_listener_data_qid; /* group data, listener STA TID 0 */
+        int sc_awdl_listener_llw_qid; /* LLW multicast, listener STA TID 6 */
+        int sc_awdl_peer_error;
+        uint8_t sc_awdl_peer_added;
+        uint8_t sc_awdl_peer_busy;
+        uint8_t sc_awdl_peer_tlc_configured;
+        uint16_t sc_awdl_peer_tx_seq;
+        uint16_t sc_awdl_peer_llw_tx_seq;
+        uint8_t sc_awdl_ba_pending;
+        uint8_t sc_awdl_ba_tid;
+        uint8_t sc_awdl_ba_start;
+        uint16_t sc_awdl_ba_ssn;
+        uint16_t sc_awdl_ba_winsize;
+        uint8_t sc_awdl_ba_peer[IEEE80211_ADDR_LEN];
+        int sc_awdl_ba_error;
+        uint8_t sc_awdl_ba_reply[sizeof(struct ieee80211_frame) + 9];
+        uint8_t sc_awdl_ba_reply_pending;
+        uint8_t sc_awdl_ba_reply_chan;
+        uint8_t sc_awdl_rate_step;     /* data-frame rate ladder on the legacy listener, 0 = 54 Mbit/s OFDM */
+        uint16_t sc_awdl_rate_ok, sc_awdl_rate_fail;
+        uint8_t sc_listener_tries;
+        struct iwx_phy_ctxt sc_listener_phy;
+        uint8_t sc_awdl_mc_variant;     /* multicast filter variant active during this listen (0 = station's) */
+        uint32_t sc_awdl_mc_roc_count;
+        uint32_t sc_aux_roc_ended;
+        uint32_t sc_aux_roc_not_sched;
 
-	/* phy contexts.  we only use the first one */
-	struct iwx_phy_ctxt sc_phyctxt[IWX_NUM_PHY_CTX];
+        /* phy contexts.  we only use the first one */
+        struct iwx_phy_ctxt sc_phyctxt[IWX_NUM_PHY_CTX];
 
-	int sc_noise;
+        int sc_noise;
 
     int sc_pm_support;
-	int sc_ltr_enabled;
+        int sc_ltr_enabled;
 
-	int sc_integrated;
-	int sc_tx_with_siso_diversity;
-	int sc_max_tfd_queue_size;
+        int sc_integrated;
+        int sc_tx_with_siso_diversity;
+        int sc_max_tfd_queue_size;
     int sc_ltr_delay;
     int sc_xtal_latency;
     int sc_low_latency_xtal;
@@ -996,31 +953,31 @@ struct iwx_softc {
     int sc_uhb_supported;
 
 #if NBPFILTER > 0
-	caddr_t			sc_drvbpf;
+        caddr_t                 sc_drvbpf;
 
-	union {
-		struct iwx_rx_radiotap_header th;
-		uint8_t	pad[IEEE80211_RADIOTAP_HDRLEN];
-	} sc_rxtapu;
-#define sc_rxtap	sc_rxtapu.th
-	int			sc_rxtap_len;
+        union {
+                struct iwx_rx_radiotap_header th;
+                uint8_t pad[IEEE80211_RADIOTAP_HDRLEN];
+        } sc_rxtapu;
+#define sc_rxtap        sc_rxtapu.th
+        int                     sc_rxtap_len;
 
-	union {
-		struct iwx_tx_radiotap_header th;
-		uint8_t	pad[IEEE80211_RADIOTAP_HDRLEN];
-	} sc_txtapu;
-#define sc_txtap	sc_txtapu.th
-	int			sc_txtap_len;
+        union {
+                struct iwx_tx_radiotap_header th;
+                uint8_t pad[IEEE80211_RADIOTAP_HDRLEN];
+        } sc_txtapu;
+#define sc_txtap        sc_txtapu.th
+        int                     sc_txtap_len;
 #endif
 };
 
 struct iwx_node {
-	struct ieee80211_node in_ni;
-	struct iwx_phy_ctxt *in_phyctxt;
+        struct ieee80211_node in_ni;
+        struct iwx_phy_ctxt *in_phyctxt;
     uint8_t in_macaddr[ETHER_ADDR_LEN];
 
-	uint16_t in_id;
-	uint16_t in_color;
+        uint16_t in_id;
+        uint16_t in_color;
     
     uint16_t in_max_mpdu_len;
     uint16_t in_amsdu_size;
@@ -1043,6 +1000,6 @@ struct iwx_node {
 #define IWX_AWDL_PEER_STA_ID 10
 #define IWX_MONITOR_STA_ID 2
 
-#define IWX_ICT_SIZE		4096
-#define IWX_ICT_COUNT		(IWX_ICT_SIZE / sizeof (uint32_t))
-#define IWX_ICT_PADDR_SHIFT	12
+#define IWX_ICT_SIZE            4096
+#define IWX_ICT_COUNT           (IWX_ICT_SIZE / sizeof (uint32_t))
+#define IWX_ICT_PADDR_SHIFT     12
