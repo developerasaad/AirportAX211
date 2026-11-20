@@ -57,9 +57,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "35CBE655251CB89700435CBC"
+            BlueprintIdentifier = "C2631DEBF2864F9B8272D88C"
             BuildableName = "AirportItlwm.kext"
-            BlueprintName = "AirportItlwm-Big Sur"
+            BlueprintName = "AirportItlwm-Sequoia"
             ReferencedContainer = "container:itlwm.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
