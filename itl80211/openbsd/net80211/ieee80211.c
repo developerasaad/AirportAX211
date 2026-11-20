@@ -954,16 +954,19 @@ ieee80211_watchdog(struct _ifnet *ifp)
                       "association" : "authentication",
                       ether_sprintf(ic->ic_bss->ni_macaddr));
             ni = ieee80211_find_node(ic, ic->ic_bss->ni_macaddr);
-            if (ic->ic_state == IEEE80211_S_AUTH && ni &&
-                ieee80211_auth_sae_timeout(ic, ic->ic_bss, ni->ni_fails + 1)) {
-                /* SAE retransmission handling consumed this timeout.
-                 * Count it exactly once here, preserving the original
-                 * three-attempt budget (the helper sees the same value
-                 * the pre-fix code passed after its unconditional
-                 * increment, but without also counting again in the
-                 * SCAN transition below). */
+            if (ic->ic_state == IEEE80211_S_AUTH && ni) {
+                /* Count the attempt BEFORE calling the helper: on give-up
+                 * the helper can run ieee80211_auth_sae_failure ->
+                 * try_another_bss -> choose_bss, which may free this node
+                 * (this port's free_node is unconditional); touching ni
+                 * after the call was a use-after-free write. If the helper
+                 * did nothing (no SAE exchange in progress) undo the
+                 * count so the generic retry branch below sees the same
+                 * value the reference implementation sees. */
                 ni->ni_fails++;
-                goto done;
+                if (ieee80211_auth_sae_timeout(ic, ic->ic_bss, ni->ni_fails))
+                    goto done;
+                ni->ni_fails--;
             }
             /* Try more times to join, some drivers will timeout when doing auth/assoc */
             if (ic->ic_state == IEEE80211_S_AUTH && ni && ni->ni_fails < 3) {

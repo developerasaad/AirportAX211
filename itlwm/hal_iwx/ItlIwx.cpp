@@ -2363,6 +2363,13 @@ iwx_read_pnvm(struct iwx_softc *sc)
     
     XYLog("PNVM parse done\n");
 
+    if (err < 0) {
+        /* iwx_pnvm_handle_section (and the TLV walk above) return negative
+         * errnos in this port; normalize the sign so the ENOENT contract
+         * below distinguishes "nothing matched" from hard errors instead
+         * of leaking a -2 past a check for +ENOENT. */
+        err = (err == -ENOENT) ? ENOENT : -err;
+    }
     if (!loaded && err == 0) {
         /* Walked the whole PNVM without a SKU match (or without any
          * section): nothing was loaded. Tell the caller with ENOENT so it
