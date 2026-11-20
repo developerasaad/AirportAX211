@@ -33,7 +33,7 @@ CI-verified (run 44620003926) but none were hardware-validated.
 | B-N21 | task_set memcpy 256B from short literals (OOB read, 14 sites) | Confirmed defect (low) | strlcpy |
 | B-N26 | node_set_timeouts memsets 2048B over 128B field (latent landmine) | Confirmed defect (latent) | Fix size computation |
 | B-N22 | m_defrag EXT branch broken, zero callers | Dead code | Remove in Tier 4 |
-| B-N04 | Unconditional XYLog in ieee80211_new_state macro (every transition prints) | Demonstrated inefficiency | Gate behind debug |
+| B-N04 | Unconditional XYLog in ieee80211_new_state macro (every transition prints) | Demonstrated inefficiency | Kept intentionally: moderate frequency (state transitions, not per-frame), present in both parent lineages, diagnostic value; removal without runtime evidence not justified |
 | C-1 | Start-failure paths leak fNetIf (V2.cpp:481-522) | Plausible risk | Release on failure |
 | C-2 | Dead MAC-string snprintf (V2.cpp:1023-1030) | Dead code | Remove |
 | E-05 | A-MSDU builder copies uninitialized ni_mld_addr (should be ic_wcl_peer_mld_addr) — MLO branch only | Confirmed defect (BE-live/AX211-latent) | Resolve during Tier 3 MLD removal (branch may vanish) |
@@ -52,3 +52,27 @@ CI-verified (run 44620003926) but none were hardware-validated.
   from AX211 firmware; software BIP-CMAC-128 PMF is the correct AX211 path.
 - Regulatory, RA-module, and ring-layout observations from the old fork —
   Eric's implementations verified equivalent or better (B-N19, B-N20, E-07/8/9).
+
+## Independent review outcome (post-implementation)
+
+The adversarial review (M6-REVIEW) of the implemented fixes returned:
+SOUND for D-01, the tier 3b guard collapse, F-11, F-10/releaseAll/
+stopFromStartFailure, F-13, and the cross-cutting preserves; two issues
+found and fixed in ad5fac4:
+
+- F-12: the first re-derivation called the SAE timeout helper before
+  counting, then dereferenced the node after a call that can free it
+  (auth_sae_failure -> try_another_bss -> choose_bss -> free_node,
+  unconditional in this port). Fixed: count before the call, undo when
+  the helper reports it did nothing (its return-0 paths have no side
+  effects). Non-SAE retry budget matches the reference exactly.
+- F-09: iwx_pnvm_handle_section returns negative errnos in this port; a
+  -ENOENT would slip past the ENOENT-skip check. Fixed: sign
+  normalization at the end of the walk. (Unreachable with the shipped
+  PNVM, which matches all supported SKU IDs - verified by parsing the
+  shipped blob.)
+
+Two residual concerns recorded (not defects): the pre-existing watchdog
+re-arm race window (closed by disable(); pre-exists in the parent), and
+one redundant LinkStatus(up) possible after unusual join completions
+(idempotent for airportd).
