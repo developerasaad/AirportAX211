@@ -125,9 +125,23 @@ jobs:
             strings "$bin" > "/tmp/fw-strings-$platform.txt" || true
             echo "--- firmware families embedded in $platform binary ---" | tee -a logs/verify-$platform.txt
             grep -o "iwlwifi-[a-z0-9-]*" "/tmp/fw-strings-$platform.txt" | sort -u | tee -a logs/verify-$platform.txt || true
-            # Record the PCI matching table for traceability.
-            echo "--- IOPCIMatch ($platform) ---" | tee -a logs/verify-$platform.txt
-            plutil -extract IOKitPersonalities.IOPCIPrimaryMatch raw "$kext/Contents/Info.plist" 2>/dev/null | tee -a logs/verify-$platform.txt || true
+            # AX211 specialization: exactly the so-a0-gf-a0 firmware pair
+            # must be embedded (API 68 ucode + PNVM), and no foreign
+            # firmware family may remain.
+            grep -q "iwlwifi-so-a0-gf-a0-68" "/tmp/fw-strings-$platform.txt" || { echo "FAIL: $platform AX211 firmware iwlwifi-so-a0-gf-a0-68 not embedded"; exit 1; }
+            grep -q "iwlwifi-so-a0-gf-a0.pnvm" "/tmp/fw-strings-$platform.txt" || { echo "FAIL: $platform AX211 PNVM not embedded"; exit 1; }
+            for foreign in iwlwifi-ty- iwlwifi-gl- iwlwifi-bz- iwlwifi-Qu iwlwifi-cc- iwlwifi-ma- iwlwifi-so-a0-gf4 iwlwifi-so-a0-hr iwlwifi-so-a0-jf iwm- iwn-; do
+              grep -q "$foreign" "/tmp/fw-strings-$platform.txt" && { echo "FAIL: $platform foreign firmware $foreign still embedded"; exit 1; } || true
+            done
+            # AX211 PCI matching: the IOPCIEDeviceWrapper personality must
+            # match only the AX211 family IDs.
+            plutil -extract IOKitPersonalities.itlwm.IOPCIMatch raw "$kext/Contents/Info.plist" | tee "/tmp/pcimatch-$platform.txt"
+            for devid in 0x51F08086 0x51F18086 0x54F08086 0x7A708086 0x7AF08086 0x7F708086; do
+              grep -q "$devid" "/tmp/pcimatch-$platform.txt" || { echo "FAIL: $platform AX211 device id $devid missing from IOPCIMatch"; exit 1; }
+            done
+            PCIMATCH_COUNT=$(wc -w < "/tmp/pcimatch-$platform.txt" | tr -d ' ')
+            [ "$PCIMATCH_COUNT" = "6" ] || { echo "FAIL: $platform IOPCIMatch has $PCIMATCH_COUNT IDs, expected exactly 6 AX211-family IDs"; exit 1; }
+            echo "$platform AX211 PCI match + firmware verification -> OK" | tee -a logs/verify-$platform.txt
             # Record binary identity.
             dwarfdump --uuid "$bin" > "artifacts/UUID-$platform.txt" 2>&1 || true
             shasum -a 256 "$bin" | tee "artifacts/AirportItlwm-$platform.bin.sha256"
