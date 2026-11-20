@@ -1,0 +1,31 @@
+# --- upstream Eric-AirportItlwm ignores (preserved) ---
+.DS_Store
+DerivedData
+build
+xcuserdata
+project.xcworkspace
+FwBinary.cpp
+*.pyc
+MacKernelSDK
+
+# --- AirportAX211 project ---
+# The preserved previous implementation is local-only reference material.
+# It must never enter the index, CI checkout, or build inputs.
+/reference/
+
+# --- sandbox workspace overlay & credentials (never commit) ---
+.ghtoken
+.zscripts/
+Caddyfile
+skills/
+download/
+upload/
+tool-results/
+.env*
+dev.log
+dev.out.log
+server.log
+node_modules/
+.backups/
+.staging/
+ci-logs/
