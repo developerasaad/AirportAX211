@@ -9,6 +9,7 @@
 #include "AirportItlwmAWDLInterface.hpp"
 #include "AirportItlwmSkywalkInterface.hpp"
 #include <HAL/ItlAWDLBootArg.hpp>
+#include <net80211/ieee80211_priv.h>
 
 #ifdef AIRPORT_WCL
 
